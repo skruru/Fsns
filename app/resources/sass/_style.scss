@@ -1,3 +1,14 @@
 li {
     list-style: none;
 }
+input, textarea{
+    border: none;
+    border-bottom: 1px solid #3490dc;
+    background: rgb(235, 235, 235);
+    border-radius: 5px;
+}
+input:focus, textarea:focus {
+    outline: 0;
+    border-bottom: 2px solid #3490dc;
+}
+

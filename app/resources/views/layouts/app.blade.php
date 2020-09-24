@@ -78,20 +78,6 @@
                 <div class="mx-auto" style="max-width:1200px">
                     <!-- チームページのメニューバー -->
                     @yield('teammenu')
-                    <section class="items">
-                        <nav class="items_nav">
-                            <ul class="d-flex justify-content-end">
-                                <li><a href="/days">Days</a></li>
-                                <li><a href="/movies">Movies</a></li>
-                                <li><a href="/blog">Blog</a></li>
-                                <li><a href="/contact">Contact</a></li>
-                            </ul>
-                        </nav>
-                        <div class="items_bord bg-primary">
-                            <!-- アイテムボード内 -->
-                            @yield('items')
-                        </div>
-                    </section>
                 </div>
             </div>
         </main>

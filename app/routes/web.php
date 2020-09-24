@@ -16,6 +16,8 @@
 // });
 Route::get('/', 'FsnsController@index');
 Route::get('/team', 'FsnsController@teams');
+Route::get('/create', 'FsnsController@create');
+Route::post('/team', 'FsnsController@myteams');
 // Route::get('/team', 'FsnsController@days');
 // Route::get('/days', 'FsnsController@days');
 // Route::get('/movies', 'FsnsController@movies');
