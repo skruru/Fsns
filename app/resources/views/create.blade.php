@@ -2,7 +2,7 @@
 
 @section('teammenu')
         <div class="header">
-            <form action="/team" method="POST">
+            <form action="/teams" method="POST">
             @csrf
                 <h1 class="team_ttl">チーム名:<input type="text" name="team_name"></h1>
                 <div class="header_content">
@@ -32,6 +32,7 @@
                 <input type="submit" value="作成する">
             </form>
         </div>
+        <p><a href="/teams">キャンセル</a></p>
         <section class="items">
             <nav class="items_nav">
                 <ul class="d-flex justify-content-end">

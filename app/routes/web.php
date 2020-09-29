@@ -15,9 +15,11 @@
 //     return view('welcome');
 // });
 Route::get('/', 'FsnsController@index');
-Route::get('/team', 'FsnsController@teams');
+Route::get('/team/{id}', 'FsnsController@team');
+Route::get('/teams', 'FsnsController@teams');
 Route::get('/create', 'FsnsController@create');
-Route::post('/team', 'FsnsController@myteams');
+Route::get('/update', 'FsnsController@update');
+Route::post('/teams', 'FsnsController@edit');
 // Route::get('/team', 'FsnsController@days');
 // Route::get('/days', 'FsnsController@days');
 // Route::get('/movies', 'FsnsController@movies');

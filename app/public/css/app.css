@@ -10908,6 +10908,7 @@ textarea {
   border: none;
   border-bottom: 1px solid #3490dc;
   background: #ebebeb;
+  border-radius: 5px;
 }
 
 input:focus,

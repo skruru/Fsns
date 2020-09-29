@@ -18,11 +18,11 @@ class CreateTeamsTable extends Migration
             $table->integer('team_id');
             $table->string('team_name', '50');
             $table->string('team_area', '20');
-            $table->string('team_img');
+            $table->string('team_img')->nullable();
             $table->string('team_password', '50');
-            $table->string('twitter', '100');
-            $table->string('instagram', '100');
-            $table->string('facebook', '100');
+            $table->string('twitter', '100')->nullable();
+            $table->string('instagram', '100')->nullable();
+            $table->string('facebook', '100')->nullable();
             $table->string('mail', '100');
             $table->string('team_contents', '200');
             $table->timestamps();
