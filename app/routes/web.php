@@ -18,13 +18,15 @@ Route::get('/', 'FsnsController@index');
 Route::get('/team/{id}', 'FsnsController@team');
 Route::get('/teams', 'FsnsController@teams');
 Route::get('/create', 'FsnsController@create');
-Route::get('/update', 'FsnsController@update');
+Route::get('/update/{id}', 'FsnsController@change');
+
+Route::get('/team/{id}/days', 'FsnsController@days');
+Route::get('/team/{id}/movie', 'FsnsController@movie');
+Route::get('/team/{id}/blog', 'FsnsController@blog');
+Route::get('/team/{id}/contact', 'FsnsController@contact');
+
 Route::post('/teams', 'FsnsController@edit');
-// Route::get('/team', 'FsnsController@days');
-// Route::get('/days', 'FsnsController@days');
-// Route::get('/movies', 'FsnsController@movies');
-// Route::get('/blog', 'FsnsController@blogs');
-// Route::get('/contact', 'FsnsController@contact');
+Route::post('/team/{id}', 'FsnsController@update');
 
 Auth::routes();
 

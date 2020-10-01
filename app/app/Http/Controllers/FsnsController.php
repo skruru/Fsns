@@ -25,6 +25,8 @@ class FsnsController extends Controller
     // {
     //     return view('team');
     // }
+
+    // 個別チームのページ
     public function team($id)
     {
         $items = DB::select('select * from teams WHERE id = ' . $id);
@@ -34,6 +36,8 @@ class FsnsController extends Controller
         }
         return view('team', ['item' => $items[0]]);
     }
+
+    // 全チーム一覧
     public function teams(Request $request)
     {
         // $teams = DB::select('select * from teams');
@@ -42,7 +46,7 @@ class FsnsController extends Controller
         return view('teams', ['teams' => $teams]);
     }
 
-    //チーム編集
+    //チーム作成
     public function create()
     {
         return view('create');
@@ -69,14 +73,56 @@ class FsnsController extends Controller
             return redirect('/teams');
     }
 
-    // チーム編集update
-    public function update (Request $request)
+    // チーム編集
+    public function change (Request $request, $id)
     {
-        return view('/update');
+        $items = DB::select('select * from teams WHERE id = ' . $id);
+        // dd($items);
+        return view('update',['item' => $items[0]]);
     }
-    // //日程 days
-    // public function days()
-    // {
-    //     return view('days');
-    // }
+
+    public function update (Request $request, $id)
+    {
+        $param = [
+            'team_id' => $request->team_id,
+            'team_name' => $request->team_name,
+            'team_area' => $request->team_area,
+            'team_img' => $request->team_img,
+            'team_password' => $request->team_password,
+            'twitter' => $request->twitter,
+            'instagram' => $request->instagram,
+            'facebook' => $request->facebook,
+            'mail' => $request->mail,
+            'team_contents' => $request->team_contents,
+        ];
+        DB::table('teams')->where('id', $request->id)->update($param);
+            return redirect('/teams');
+    }
+    // 日程 days
+    public function days($id)
+    {
+        $items = DB::select('select * from teams WHERE id = ' . $id);
+        return view('days', ['item' => $items[0]]);
+    }
+
+    //動画
+    public function movie($id)
+    {
+        $items = DB::select('select * from teams WHERE id = ' . $id);
+        return view('movie', ['item' => $items[0]]);
+    }
+
+    // ブログ
+    public function blog($id)
+    {
+        $items = DB::select('select * from teams WHERE id = ' . $id);
+        return view('blog', ['item' => $items[0]]);
+    }
+
+    // コンタクト
+    public function contact($id)
+    {
+        $items = DB::select('select * from teams WHERE id = ' . $id);
+        return view('contact', ['item' => $items[0]]);
+    }
 }
