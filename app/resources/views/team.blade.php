@@ -22,13 +22,13 @@
     <section class="items">
         <nav class="items_nav">
             <ul class="d-flex justify-content-end">
-                <li><a href="{{$item->id}}/days">Days</a></li>
-                <li><a href="{{$item->id}}/movie">Movie</a></li>
-                <li><a href="{{$item->id}}/blog">Blog</a></li>
-                <li><a href="{{$item->id}}/contact">Contact</a></li>
+                <li><a href="/team/{{$item->id}}/days">Days</a></li>
+                <li><a href="/team/{{$item->id}}/movie">Movie</a></li>
+                <li><a href="/team/{{$item->id}}/blog">Blog</a></li>
+                <li><a href="/team/{{$item->id}}/contact">Contact</a></li>
             </ul>
         </nav>
-        <div class="items_bord bg-primary">
+        <div class="items_bord">
             @yield('show')
         </div>
     </section>

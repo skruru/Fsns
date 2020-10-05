@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\team; //teamsモデルの参照
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon; //Carbon
 
 class FsnsController extends Controller
 {
