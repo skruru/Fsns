@@ -27,7 +27,6 @@
                         </li>
                     </ul>
                 </div>
-                <p>チームID：<input type="text" name="team_id" value="{{$item->team_id}}"></p>
                 <p>チームパスワード：<input type="password" name="team_password" value="{{$item->team_password}}"></p>
                 <p>メールアドレス：<input type="mail" name="mail" value="{{$item->mail}}"></p>
                 <input type="submit" value="更新する">
