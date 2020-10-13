@@ -5,6 +5,8 @@
     <p>blog</p>
 </div>
 <p><a href="/team/{{$item->id}}/blog/post">投稿する</a></p>
-<p>{{$blogs->title}}</p>
-<p>{{$blogs->text}}</p>
+@foreach ($blogs as $blog)
+<p>{{$blog->title}}</p>
+<p>{{$blog->text}}</p>
+@endforeach
 @endsection

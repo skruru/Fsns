@@ -27,13 +27,13 @@
 <p><a href="/team/{{$item->id}}/days/todo?m={{$today->month}}">予定を追加</a></p>
 @yield('todo')
 <p>予定を削除</p>
-@for($i = 0; $i <= count($plan) - 1; $i++)
+@foreach($plans as $plan)
 <dl class="border">
-<dt>{{$plan[$i]->month}}月 {{$plan[$i]->day}}日</dt>
-<dd>{{$plan[$i]->start}}時　〜　{{$plan[$i]->end}}時まで　　{{$plan[$i]->todo}}</dd>
+<dt>{{$plan->month}}月 {{$plan->day}}日</dt>
+<dd>{{$plan->start}}時　〜　{{$plan->end}}時まで　　{{$plan->todo}}</dd>
 <form action="/team/{{$item->id}}/days/daysUp/{$i}" method="get">
 <p><input type="submit" value="変更"></p>
 </form>
 </dl>
-@endfor
+@endforeach
 @endsection

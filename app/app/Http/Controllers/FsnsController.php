@@ -8,9 +8,9 @@ use App\Models\User;
 use App\Models\Blog;
 use App\Models\Movie;
 use App\Models\Todo;
+use App\Lib\My_func;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
 
 class FsnsController extends Controller
 {
@@ -35,27 +35,14 @@ class FsnsController extends Controller
     // 個別チームのページ
     public function team($id)
     {
-        $dt = Carbon::now();
-
-        $m = isset($_GET['m'])? htmlspecialchars($_GET['m'], ENT_QUOTES, 'utf-8') : '';
-        $y = isset($_GET['y'])? htmlspecialchars($_GET['y'], ENT_QUOTES, 'utf-8') : '';
-        if($m!=''||$y!=''){
-            $dt = Carbon::createFromDate($y,$m,01);
-        }else{
-        $dt = Carbon::createFromDate();
-        }
-
-        //今月
-        $tm = Carbon::createFromDate($dt->year,$dt->month,$dt->day);
-        $tmY = $tm->year;
-        $tmM = $tm->month;
+        $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
         // dd($items);
         if (count($items) == 0) {
             return abort(404);
         }
-        return view('team', ['item' => $items[0], 'id' => $id, 'tmY' => $tmY, 'tmM' => $tmM]);
+        return view('team', ['item' => $items[0], 'id' => $id, 'tt' => $tt]);
     }
 
     // 全チーム一覧
@@ -127,6 +114,8 @@ class FsnsController extends Controller
     // 日程 days
     public function days($id)
     {
+        $tt = My_func::today();
+
         $dt = Carbon::now();
 
         $m = isset($_GET['m'])? htmlspecialchars($_GET['m'], ENT_QUOTES, 'utf-8') : '';
@@ -182,19 +171,19 @@ class FsnsController extends Controller
         // dd($days);
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->orderBy(
-            'day'
-        )->get();
-        // dd($m);
+        $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
+        // dd($plans);
 
         // $plans = DB::select('select * from todos WHERE team_id = ' . $items[0]->id);
-        return view('days', ['item' => $items[0], 'id' => $id, 'plan' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today]);
+        return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
 
     }
 
     // todo
     public function todo($id)
     {
+        $tt = My_func::today();
+
         $dt = Carbon::now();
 
         $m = isset($_GET['m'])? htmlspecialchars($_GET['m'], ENT_QUOTES, 'utf-8') : '';
@@ -250,13 +239,11 @@ class FsnsController extends Controller
         $items = DB::select('select * from teams WHERE id = ' . $id);
         // dd($m);
         // $plans = DB::select('select * from todos WHERE team_id = ' . $items[0]->id);
-        $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->orderBy(
-            'day'
-        )->get();
+        $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
 
         // dd($plans);
 
-        return view('todo', ['item' => $items[0], 'id' => $id, 'plan' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'plans' => $plans, 'today' => $today]);
+        return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'plans' => $plans, 'today' => $today, 'tt' => $tt]);
     }
 
 
@@ -281,6 +268,8 @@ class FsnsController extends Controller
         ];
         DB::table('todos')->insert($param);
 
+        $tt = My_func::today();
+
         $dt = Carbon::now();
 
         $m = isset($_GET['m'])? htmlspecialchars($_GET['m'], ENT_QUOTES, 'utf-8') : '';
@@ -336,27 +325,36 @@ class FsnsController extends Controller
         // dd($days);
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->orderBy(
-            'day'
-        )->get();
+        $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
 
-        return view('days', ['item' => $items[0], 'id' => $id, 'plan' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today]);
+        return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
     }
 
     //動画
     public function movie($id)
     {
+        $tt = My_func::today();
+
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        $movies = Movie::where('team_id', $id)->first();
-        return view('movie', ['item' => $items[0]], ['movies' => $movies]);
+        $movies = Movie::all()->where('team_id', $id);
+        if($movies == null){
+            $movies = new Movie;
+            $movies->append('title', '');
+            $movies->append('movie', '');
+        }
+        // dd($tm);
+
+        return view('movie', ['item' => $items[0], 'movies' => $movies, 'tt' => $tt]);
     }
 
     //動画のアップロード
     public function upload($id)
     {
+        $tt = My_func::today();
+
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        dd($items);
-        return view('upload', ['item' => $items[0]]);
+        // dd($items);
+        return view('upload', ['item' => $items[0], 'tt' => $tt]);
     }
 
     //データベースへのアップロード
@@ -368,23 +366,44 @@ class FsnsController extends Controller
             'movie' => $request->movie,
         ];
         DB::table('movies')->insert($param);
+
+        $tt = My_func::today();
+
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('movie', ['item' => $items[0]]);
+        $movies = Movie::all()->where('team_id', $id);
+        if($movies == null){
+            $movies = new Movie;
+            $movies->append('title', '');
+            $movies->append('movie', '');
+        }
+
+        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies]);
     }
 
     // ブログ
     public function blog($id)
     {
+        $tt = My_func::today();
+
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        $blogs = Blog::where('team_id', $id)->first();
-        return view('blog', ['item' => $items[0]], ['blogs' => $blogs]);
+
+        $blogs = Blog::all()->where('team_id', $id);
+        if($blogs == null){
+            $blogs = new Blog;
+            $blogs->append('title', '');
+            $blogs->append('blog', '');
+        }
+
+        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt]);
     }
 
     //投稿
     public function post($id)
     {
+        $tt = My_func::today();
+
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('post', ['item' => $items[0]]);
+        return view('post', ['item' => $items[0], 'tt' => $tt]);
     }
 
     //表示
@@ -396,22 +415,36 @@ class FsnsController extends Controller
             'text' => $request->text,
         ];
         DB::table('blogs')->insert($param);
+
+        $tt = My_func::today();
+
+        $blogs = Blog::all()->where('team_id', $id);
+        if($blogs == null){
+            $blogs = new Blog;
+            $blogs->append('title', '');
+            $blogs->append('blog', '');
+        }
+
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('blog', ['item' => $items[0]]);
+        return view('blog', ['item' => $items[0], 'tt' => $tt, 'blogs' => $blogs]);
     }
 
     // コンタクト
     public function contact($id)
     {
+        $tt = My_func::today();
+
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('contact', ['item' => $items[0]]);
+        return view('contact', ['item' => $items[0], 'tt' => $tt]);
     }
 
     //コンタクトの送信
     public function mail(Request $request, $id)
     {
+        $tt = My_func::today();
+
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('contact', ['item' => $items[0]]);
+        return view('contact', ['item' => $items[0],'tt' => $tt]);
     }
 
     //マイページ
