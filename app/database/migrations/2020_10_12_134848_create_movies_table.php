@@ -20,7 +20,7 @@ class CreateMoviesTable extends Migration
             $table->string('movie');
             $table->timestamps();
 
-            $table->foreign('team_id')->references('id')->on('teams');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });
     }
 

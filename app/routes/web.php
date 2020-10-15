@@ -23,7 +23,6 @@ Route::get('/myPage/{id}', 'FsnsController@mypage');
 Route::get('/myPage/{id}/account', 'FsnsController@account');
 Route::get('/players', 'FsnsController@players');
 Route::get('/player', 'FsnsController@player');
-Route::get('/serch', 'FsnsController@serch');
 
 Route::get('/team/{id}/days', 'FsnsController@days');
 Route::get('/team/{id}/days/todo', 'FsnsController@todo');
@@ -33,6 +32,8 @@ Route::get('/team/{id}/blog', 'FsnsController@blog');
 Route::get('/team/{id}/blog/post', 'FsnsController@post');
 Route::get('/team/{id}/contact', 'FsnsController@contact');
 
+Route::post('/delete/{id}', 'FsnsController@del');
+Route::post('/serch','FsnsController@serch');
 Route::post('/teams', 'FsnsController@edit');
 Route::post('/team/{id}', 'FsnsController@update');
 Route::post('/team/{id}/days', 'FsnsController@add');

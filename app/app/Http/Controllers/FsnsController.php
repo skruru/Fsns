@@ -19,19 +19,6 @@ class FsnsController extends Controller
         return view('top');
     }
 
-    // チームページ
-    // public function teams($id)
-    // {
-    //     $items = DB::select('select * from team');
-    //     // dd($items);
-    //     return view('team', ['items' => $items]);
-    // }
-
-    // public function team($id)
-    // {
-    //     return view('team');
-    // }
-
     // 個別チームのページ
     public function team($id)
     {
@@ -88,6 +75,14 @@ class FsnsController extends Controller
         return view('update',['item' => $items[0]]);
     }
 
+    //チームの削除
+    public function del($id)
+    {
+        DB::table('teams')->where('id', $id)->delete();
+        return redirect('/teams');
+    }
+
+    //チームのupdate
     public function update (Request $request, $id)
     {
         $param = [
@@ -105,11 +100,13 @@ class FsnsController extends Controller
             return redirect('/teams');
     }
 
-    //チームの検索
-    // public function serch(Request $request)
-    // {
-    //     return
-    // }
+    // チームの検索
+    public function serch(Request $request)
+    {
+        $team = DB::table('teams')->where('team_name',$request->team_name)->get();
+        // dd($team[0]);
+        return redirect('/team/'.$team[0]->id);
+    }
 
     // 日程 days
     public function days($id)

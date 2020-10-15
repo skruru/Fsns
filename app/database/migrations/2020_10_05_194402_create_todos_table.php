@@ -23,7 +23,7 @@ class CreateTodosTable extends Migration
             $table->string('todo');
             $table->timestamps();
 
-            $table->foreign('team_id')->references('id')->on('teams');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });
     }
 
