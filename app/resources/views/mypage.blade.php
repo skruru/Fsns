@@ -10,8 +10,11 @@
             <p>活動地域：{{$users->area}}</p>
             <p>性別：{{$users->gender}}</p>
             <p>フットサル歴{{$users->experience}}</p>
+            <p>twitter：{{$users->twitter}}</p>
+            <p>instagram：{{$users->instagram}}</p>
+            <p>facebook：{{$users->facebook}}</p>
         </div>
-        <p><a href="/myPage/account">編集する</a></p>
+        <p><a href="/myPage/{{$users->id}}/account">編集する</a></p>
         <p><a href="/players">playersにもどる</a></p>
     </div>
 </div>

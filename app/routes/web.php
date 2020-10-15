@@ -20,7 +20,7 @@ Route::get('/teams', 'FsnsController@teams');
 Route::get('/create', 'FsnsController@create');
 Route::get('/update/{id}', 'FsnsController@change');
 Route::get('/myPage/{id}', 'FsnsController@mypage');
-Route::get('/myPage/account', 'FsnsController@account');
+Route::get('/myPage/{id}/account', 'FsnsController@account');
 Route::get('/players', 'FsnsController@players');
 Route::get('/player', 'FsnsController@player');
 Route::get('/serch', 'FsnsController@serch');
@@ -40,6 +40,7 @@ Route::post('/team/{id}/blog', 'FsnsController@show');
 Route::post('/team/{id}/movie', 'FsnsController@up');
 Route::post('/team/{id}/contact', 'FsnsController@mail');
 Route::post('/players', 'FsnsController@user');
+Route::post('/myPage/{id}', 'FsnsController@rewrite');
 
 Route::get('/team/{id}/days/dayschan', 'FsnsController@dayschan');
 

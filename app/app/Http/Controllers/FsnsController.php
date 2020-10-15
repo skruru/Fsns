@@ -455,9 +455,27 @@ class FsnsController extends Controller
     }
 
     //マイページ編集
-    public function account()
+    public function account(Request $request,$id)
     {
-        return view('account');
+        $users = DB::select('select * from users WHERE id = ' . $id);
+        return view('account', ['users' => $users[0]]);
+    }
+    public function rewrite(Request $request,$id)
+    {
+        $param = [
+            'name' => $request->account_name,
+            'area' => $request->account_area,
+            'email' => $request->account_mail,
+            'gender' => $request->gender,
+            'experience' => $request->experience,
+            'password' => $request->account_password,
+            'twitter' => $request->twitter,
+            'instagram' => $request->instagram,
+            'facebook' => $request->facebook,
+        ];
+        DB::table('users')->where('id',$id)->update($param);
+        $users = DB::select('select * from users WHERE id = ' . $id);
+        return view('mypage', ['users' => $users[0]]);
     }
 
     //playersのページ
