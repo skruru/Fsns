@@ -26,9 +26,12 @@ Route::get('/player', 'FsnsController@player');
 
 Route::get('/team/{id}/days', 'FsnsController@days');
 Route::get('/team/{id}/days/todo', 'FsnsController@todo');
+Route::get('/team/{id}/days/daysUp/{todo_id}', 'FsnsController@daysup');
 Route::get('/team/{id}/movie', 'FsnsController@movie');
+Route::get('/team/{id}/movie/movieup/{movie_id}', 'FsnsController@movieup');
 Route::get('/team/{id}/movie/upload', 'FsnsController@upload');
 Route::get('/team/{id}/blog', 'FsnsController@blog');
+Route::get('/team/{id}/blog/blogup/{blog_id}', 'FsnsController@blogup');
 Route::get('/team/{id}/blog/post', 'FsnsController@post');
 Route::get('/team/{id}/contact', 'FsnsController@contact');
 
@@ -37,8 +40,14 @@ Route::post('/serch','FsnsController@serch');
 Route::post('/teams', 'FsnsController@edit');
 Route::post('/team/{id}', 'FsnsController@update');
 Route::post('/team/{id}/days', 'FsnsController@add');
+Route::post('/team/{id}/days/todo', 'FsnsController@dup');
+Route::post('/team/{id}/days/{todo_id}/delete', 'FsnsController@ddel');
 Route::post('/team/{id}/blog', 'FsnsController@show');
 Route::post('/team/{id}/movie', 'FsnsController@up');
+Route::post('/team/{id}/movie/mup/{movie_id}', 'FsnsController@mup');
+Route::post('/team/{id}/movie/mdel/{movie_id}', 'FsnsController@mdel');
+Route::post('/team/{id}/blog/bup/{blog_id}', 'FsnsController@bup');
+Route::post('/team/{id}/blog/bdel/{blog_id}', 'FsnsController@bdel');
 Route::post('/team/{id}/contact', 'FsnsController@mail');
 Route::post('/players', 'FsnsController@user');
 Route::post('/myPage/{id}', 'FsnsController@rewrite');
