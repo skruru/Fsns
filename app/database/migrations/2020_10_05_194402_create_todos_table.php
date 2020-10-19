@@ -21,7 +21,8 @@ class CreateTodosTable extends Migration
             $table->string('start');
             $table->string('end');
             $table->string('todo');
-            $table->timestamps();
+            $table->timestamp('updated_at')->useCurrent()->nullable();
+            $table->timestamp('created_at')->useCurrent()->nullable();
 
             $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });

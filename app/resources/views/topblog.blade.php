@@ -17,16 +17,5 @@
     <p><a href="/">最新</a><a href="/blogs">ブログ</a></p>
 </div>
 
-<div class="mx-auto border" style="max-width:1200px">
-@for($i = 0; $i <= count($blogs)-1; $i++)
-<div class="border">
-<p>チーム：<a href="/team/{{$blogs[$i]->team_id}}">{{$teams[$i][0]->team_name}}</a></p>
-<p>タイトル：<a href="/team/{{$blogs[$i]->team_id}}/blog">{{$blogs[$i]->title}}</a></p>
-<p>内容：{{$blogs[$i]->text}}</p>
-<p>最終更新：{{$blogs[$i]->updated_at}}</p>
-</div>
-@endfor
-</div>
-
 </div>
 @endsection

@@ -16,7 +16,23 @@ class FsnsController extends Controller
 {
     public function index()
     {
-        return view('top');
+        $blogs = DB::table('blogs')->orderBy('updated_at', 'desc')->get();
+        for($i = 0; $i <= count($blogs)-1; $i++)
+        {
+            $team_id[] = $blogs[$i]->team_id;
+        }
+        for($i = 0; $i <= count($team_id) -1; $i++)
+        {
+            $teams[] = DB::table('teams')->where('id', $team_id[$i])->get();
+        }
+        // dd($teams[2][0]);
+        return view('top', ['blogs' => $blogs, 'teams' => $teams]);
+    }
+
+    //topページのフォローチームのブログ
+    public function blogs()
+    {
+        return view('topblog');
     }
 
     // 個別チームのページ
@@ -323,10 +339,20 @@ class FsnsController extends Controller
         }
         $items = DB::select('select * from teams WHERE id = ' . $id);
         $plan = DB::table('todos')->where('id', $todo_id)->get();
+        $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
+
 
         // dd($plan[0]);
+        if($plans->isEmpty())
+        {
+            $plans[] = '';
+            return view('daysup', ['item' => $items[0], 'id' => $id, 'plan' => $plan[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'plans' => $plans]);
 
-        return view('daysup', ['item' => $items[0], 'id' => $id, 'plan' => $plan[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+        }else{
+            return view('daysup', ['item' => $items[0], 'id' => $id, 'plan' => $plan[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'plans' => $plans]);
+        }
+
+
     }
 
     //日程変更完了
@@ -401,7 +427,15 @@ class FsnsController extends Controller
         // dd($plans);
 
         // $plans = DB::select('select * from todos WHERE team_id = ' . $items[0]->id);
-        return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+        if($plans->isEmpty())
+        {
+            $plans[] = '';
+            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+
+        } else {
+
+            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+        }
 
     }
 
@@ -477,7 +511,15 @@ class FsnsController extends Controller
         $items = DB::select('select * from teams WHERE id = ' . $id);
         $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
 
-        return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+        if($plans->isEmpty())
+        {
+            $plans[] = '';
+            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+
+        } else {
+
+            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+        }
     }
 
     //予定の削除

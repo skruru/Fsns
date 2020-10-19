@@ -26,7 +26,8 @@ class CreateUsersTable extends Migration
             $table->string('instagram', '100')->nullable();
             $table->string('facebook', '100')->nullable();
             $table->rememberToken();
-            $table->timestamps();
+            $table->timestamp('updated_at')->useCurrent()->nullable();
+            $table->timestamp('created_at')->useCurrent()->nullable();
         });
     }
 

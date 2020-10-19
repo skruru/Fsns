@@ -15,6 +15,7 @@
 //     return view('welcome');
 // });
 Route::get('/', 'FsnsController@index');
+Route::get('/blogs', 'FsnsController@blogs');
 Route::get('/team/{id}', 'FsnsController@team');
 Route::get('/teams', 'FsnsController@teams');
 Route::get('/create', 'FsnsController@create');

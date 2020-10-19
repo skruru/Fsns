@@ -18,7 +18,8 @@ class CreateBlogsTable extends Migration
             $table->biginteger('team_id')->unsigned();
             $table->string('title');
             $table->string('text');
-            $table->timestamps();
+            $table->timestamp('updated_at')->useCurrent()->nullable();
+            $table->timestamp('created_at')->useCurrent()->nullable();
 
             $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
         });
