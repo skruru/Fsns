@@ -14,7 +14,7 @@
 </div>
 <br><br>
 <div class="mx-auto" style="max-width:1200px">
-    <p><a href="/">最新</a><a href="/blogs">ブログ</a></p>
+    <p><a href="/">最新</a><a href="/blogs">フォローチームのブログ</a></p>
 </div>
 
 <div class="mx-auto border" style="max-width:1200px">
