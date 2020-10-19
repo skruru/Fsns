@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\Blog;
@@ -11,22 +12,33 @@ use App\Models\Todo;
 use App\Lib\My_func;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+// use App\Http\Controllers\Auth;
+
 
 class FsnsController extends Controller
 {
     public function index()
     {
         $blogs = DB::table('blogs')->orderBy('updated_at', 'desc')->get();
-        for($i = 0; $i <= count($blogs)-1; $i++)
+        // dd($blogs);
+        if($blogs->isEmpty())
         {
-            $team_id[] = $blogs[$i]->team_id;
+            $teams[] = DB::table('teams')->get();
+
+            return view('top', ['blogs' => $blogs, 'teams' => $teams]);
+
+        } else {
+            for($i = 0; $i <= count($blogs)-1; $i++)
+            {
+                $team_id[] = $blogs[$i]->team_id;
+            }
+            for($i = 0; $i <= count($team_id) -1; $i++)
+            {
+                $teams[] = DB::table('teams')->where('id', $team_id[$i])->get();
+            }
+            // dd($teams[2][0]);
+            return view('top', ['blogs' => $blogs, 'teams' => $teams]);
         }
-        for($i = 0; $i <= count($team_id) -1; $i++)
-        {
-            $teams[] = DB::table('teams')->where('id', $team_id[$i])->get();
-        }
-        // dd($teams[2][0]);
-        return view('top', ['blogs' => $blogs, 'teams' => $teams]);
     }
 
     //topページのフォローチームのブログ
@@ -45,7 +57,9 @@ class FsnsController extends Controller
         if (count($items) == 0) {
             return abort(404);
         }
-        return view('team', ['item' => $items[0], 'id' => $id, 'tt' => $tt]);
+
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+        return view('team', ['item' => $items[0], 'id' => $id, 'tt' => $tt, 'followers' => $followers]);
     }
 
     // 全チーム一覧
@@ -188,18 +202,20 @@ class FsnsController extends Controller
         // dd($days);
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $plan = DB::table('todos')->where('team_id', $id)->where('month', $m)->get();
 
-        // dd($plan->isEmpty());
+        // dd($plan);
         if($plan->isEmpty())
         {
             $plans[] = '';
             // dd($plans);
-            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
         }else{
             $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
+            // dd($plans);
 
-            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
         }
         // $plans = DB::select('select * from todos WHERE team_id = ' . $items[0]->id);
 
@@ -263,6 +279,7 @@ class FsnsController extends Controller
             $weekFirst++;
         }
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
 
         // dd($plans);
@@ -270,11 +287,11 @@ class FsnsController extends Controller
         {
             $plans[] = '';
             // dd($plans);
-            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
         }else{
             $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
 
-            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
         }
 
     }
@@ -338,18 +355,19 @@ class FsnsController extends Controller
             $weekFirst++;
         }
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        $plan = DB::table('todos')->where('id', $todo_id)->get();
-        $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+        $plana = DB::table('todos')->where('id', $todo_id)->get();
+        $plans = DB::table('todos')->where('month', $m)->where('team_id', $id)->get()->sortBy('day');
 
+        // dd($plans);
 
-        // dd($plan[0]);
         if($plans->isEmpty())
         {
             $plans[] = '';
-            return view('daysup', ['item' => $items[0], 'id' => $id, 'plan' => $plan[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'plans' => $plans]);
+            return view('daysup', ['item' => $items[0], 'id' => $id, 'plana' => $plana[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'plans' => $plans, 'followers' => $followers]);
 
         }else{
-            return view('daysup', ['item' => $items[0], 'id' => $id, 'plan' => $plan[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'plans' => $plans]);
+            return view('daysup', ['item' => $items[0], 'id' => $id, 'plana' => $plana[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'plans' => $plans, 'followers' => $followers]);
         }
 
 
@@ -423,6 +441,7 @@ class FsnsController extends Controller
         $abc = DB::table('todos')->where('id', $request->todo_id)->update($param);
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
         // dd($plans);
 
@@ -430,11 +449,11 @@ class FsnsController extends Controller
         if($plans->isEmpty())
         {
             $plans[] = '';
-            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
 
         } else {
 
-            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
         }
 
     }
@@ -509,16 +528,17 @@ class FsnsController extends Controller
         // dd($days);
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
 
         if($plans->isEmpty())
         {
             $plans[] = '';
-            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
 
         } else {
 
-            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt]);
+            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
         }
     }
 
@@ -540,6 +560,7 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $movies = Movie::all()->where('team_id', $id);
         if($movies == null){
             $movies = new Movie;
@@ -548,7 +569,7 @@ class FsnsController extends Controller
         }
         // dd($tm);
 
-        return view('movie', ['item' => $items[0], 'movies' => $movies, 'tt' => $tt]);
+        return view('movie', ['item' => $items[0], 'movies' => $movies, 'tt' => $tt, 'followers' => $followers]);
     }
 
     //動画のアップロード
@@ -557,8 +578,9 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         // dd($items);
-        return view('upload', ['item' => $items[0], 'tt' => $tt]);
+        return view('upload', ['item' => $items[0], 'tt' => $tt, 'followers' => $followers]);
     }
 
     //データベースへのアップロード
@@ -574,6 +596,7 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $movies = Movie::all()->where('team_id', $id);
         if($movies == null){
             $movies = new Movie;
@@ -581,7 +604,7 @@ class FsnsController extends Controller
             $movies->append('movie', '');
         }
 
-        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies]);
+        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies, 'followers' => $followers]);
     }
 
     //movieの変更削除ページ
@@ -590,9 +613,10 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $movie = DB::table('movies')->where('id', $movie_id)->get();
         // dd($movie);
-        return view('movieup', ['item' => $items[0], 'tt' => $tt, 'movie' => $movie[0]]);
+        return view('movieup', ['item' => $items[0], 'tt' => $tt, 'movie' => $movie[0], 'followers' => $followers]);
     }
 
     //movieの変更
@@ -608,6 +632,7 @@ class FsnsController extends Controller
         DB::table('movies')->where('id', $movie_id)->update($param);
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $movies = Movie::all()->where('team_id', $id);
         // dd($movies);
         if($movies == null){
@@ -617,7 +642,7 @@ class FsnsController extends Controller
         }
 
         // dd($movie[0]);
-        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies]);
+        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies, 'followers' => $followers]);
     }
 
     //movieの削除
@@ -628,6 +653,7 @@ class FsnsController extends Controller
         DB::table('movies')->where('id', $movie_id)->delete();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $movies = Movie::all()->where('team_id', $id);
         if($movies == null){
             $movies = new Movie;
@@ -635,7 +661,7 @@ class FsnsController extends Controller
             $movies->append('movie', '');
         }
         // dd($movie);
-        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies]);
+        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies, 'followers' => $followers]);
     }
 
     // ブログ
@@ -644,6 +670,7 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
 
         $blogs = Blog::all()->where('team_id', $id);
         if($blogs == null){
@@ -652,7 +679,7 @@ class FsnsController extends Controller
             $blogs->append('blog', '');
         }
 
-        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt]);
+        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt, 'followers' => $followers]);
     }
 
     //ブログの変更削除
@@ -661,6 +688,7 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
 
         $blog = DB::table('blogs')->where('team_id', $id)->where('id', $blog_id)->get();
         // dd($blog);
@@ -670,7 +698,7 @@ class FsnsController extends Controller
             $blog->append('blog', '');
         }
 
-        return view('blogup', ['item' => $items[0], 'blog' => $blog[0], 'tt' => $tt]);
+        return view('blogup', ['item' => $items[0], 'blog' => $blog[0], 'tt' => $tt, 'followers' => $followers]);
     }
 
     //ブログの変更
@@ -679,6 +707,7 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
 
         $param = [
             'team_id' => $request->team_id,
@@ -695,7 +724,7 @@ class FsnsController extends Controller
             $blogs->append('blog', '');
         }
 
-        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt]);
+        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt, 'followers' => $followers]);
     }
 
     //投稿
@@ -704,7 +733,8 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('post', ['item' => $items[0], 'tt' => $tt]);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+        return view('post', ['item' => $items[0], 'tt' => $tt, 'followers' => $followers]);
     }
 
     //表示
@@ -719,6 +749,7 @@ class FsnsController extends Controller
 
         $tt = My_func::today();
 
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $blogs = Blog::all()->where('team_id', $id);
         if($blogs == null){
             $blogs = new Blog;
@@ -727,7 +758,7 @@ class FsnsController extends Controller
         }
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('blog', ['item' => $items[0], 'tt' => $tt, 'blogs' => $blogs]);
+        return view('blog', ['item' => $items[0], 'tt' => $tt, 'blogs' => $blogs, 'followers' => $followers]);
     }
 
     //ブログの削除
@@ -739,6 +770,8 @@ class FsnsController extends Controller
 
         DB::table('blogs')->where('team_id', $id)->where('id',$blog_id)->delete();
 
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+
         $blogs = Blog::all()->where('team_id', $id);
         if($blogs == null){
             $blogs = new Blog;
@@ -746,7 +779,7 @@ class FsnsController extends Controller
             $blogs->append('blog', '');
         }
 
-        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt]);
+        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt, 'followers' => $followers]);
     }
 
     // コンタクト
@@ -755,7 +788,8 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('contact', ['item' => $items[0], 'tt' => $tt]);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+        return view('contact', ['item' => $items[0], 'tt' => $tt, 'followers' => $followers]);
     }
 
     //コンタクトの送信
@@ -764,14 +798,58 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('contact', ['item' => $items[0],'tt' => $tt]);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+        return view('contact', ['item' => $items[0],'tt' => $tt, 'followers' => $followers]);
+    }
+
+    //フォロワーページ
+    public function follower($id)
+    {
+        $tt = My_func::today();
+
+        $items = DB::select('select * from teams WHERE id = ' . $id);
+
+        $followers = DB::table('followers')->where('team_id', $id)->orderBy('user_id', 'desc')->get();
+        // dd($followers->isEmpty());
+        if($followers->isEmpty())
+        {
+
+            $followers = DB::table('followers')->where('team_id', $id)->count();
+            return view('team', ['item' => $items[0], 'id' => $id, 'tt' => $tt, 'followers' => $followers]);
+        }
+        $user = DB::table('users')->where('id', $followers[0]->user_id)->get();
+        // dd($user);
+
+        return view('follower', ['item' => $items[0], 'tt' => $tt, 'id' => $id, 'user' => $user[0]]);
+    }
+
+    //teamのフォロー
+    public function tfollow(Request $request,$id)
+    {
+        $tt = My_func::today();
+
+        $user = Auth::user();
+        // dd($user->id);
+        $user_id = $user->id;
+
+        $param = [
+            'team_id' => $request->team_id,
+            'user_id' => $user_id,
+        ];
+        DB::table('followers')->insert($param);
+
+        $items = DB::select('select * from teams WHERE id = ' . $id);
+        return view('follower', ['item' => $items[0], 'tt' => $tt, 'id' => $id]);
     }
 
     //マイページ
     public function mypage($id)
     {
         $users = DB::select('select * from users WHERE id = ' . $id);
-        return view('mypage', ['users' => $users[0]]);
+        $follow = DB::table('followers')->where('user_id', $id)->get();
+        // dd(count($follow));
+        $follows = count($follow);
+        return view('mypage', ['users' => $users[0], 'follows' => $follows]);
     }
 
     //マイページ編集

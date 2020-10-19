@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('teammenu')
+@section('content')
     <div class="">
         @foreach ($players as $player)
         <p><a href="/myPage/{{$player['id']}}">{{$player['name']}}</a></p>

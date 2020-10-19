@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('teammenu')
+@section('content')
         <div class="header">
             <form action="/players" method="POST">
             @csrf

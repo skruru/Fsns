@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('top')
+@section('content')
 <div class="container-fluid">
 <div class="">
     <div class="mx-auto" style="max-width:1200px">

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('top')
+@section('content')
 <div class="container-fluid">
 <div class="">
     <div class="mx-auto" style="max-width:1200px">
@@ -9,7 +9,8 @@
             <p>アカウント名：{{$users->name}}</p>
             <p>活動地域：{{$users->area}}</p>
             <p>性別：{{$users->gender}}</p>
-            <p>フットサル歴{{$users->experience}}</p>
+            <p>フットサル歴：{{$users->experience}}</p>
+            <p>フォローチーム：{{$follows}}チーム</p>
             <p>twitter：{{$users->twitter}}</p>
             <p>instagram：{{$users->instagram}}</p>
             <p>facebook：{{$users->facebook}}</p>

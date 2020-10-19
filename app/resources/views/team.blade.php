@@ -1,9 +1,15 @@
 @extends('layouts.app')
 
-@section('teammenu')
+@section('content')
     <div class="header">
         <h1 class="team_ttl">チーム名:{{$item->team_name}}</h1>
         <p><a href="/update/{{$item->id}}">チーム編集</a></p>
+        <form action="/team/{{$item->id}}/follower" method="POST">
+            @csrf
+            <input type="hidden" name="team_id" value="{{$item->id}}">
+            <input class="bg-primary text-white" type="submit" value="フォローする">
+        </form>
+        <br>
         <div class="header_content">
             <p class="header_content_img"><img src="https://placehold.jp/150x150.png" alt=""></p>
             <p>
@@ -15,7 +21,7 @@
                 <li><a href="instagram">i</a></li>
                 <li><a href="facebook">f</a></li>
             </ul>
-            <p class="team_follow"><a href="/follower">フォロワー</a></p>
+            <p class="team_follow"><a href="/team/{{$item->id}}/follower">フォロワー</a>{{$followers}}人</p>
             <p><a href="/teams">チーム一覧へ</a></p>
         </div>
     </div>

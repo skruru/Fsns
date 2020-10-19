@@ -27,6 +27,6 @@
         <input type="hidden" name="id" value="{{$item->id}}">
         <input type="submit" value="追加">
     </form>
-    <p><a href="/team/{{$item->id}}/days">キャンセル</a></p>
+    <p><a href="/team/{{$item->id}}/days/?y={{$tt['tmY']}}&&m={{$tt['tmM']}}">キャンセル</a></p>
 </dl>
 @endsection

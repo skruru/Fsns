@@ -15,10 +15,10 @@
 //     return view('welcome');
 // });
 Route::get('/', 'FsnsController@index');
-Route::get('/blogs', 'FsnsController@blogs');
+Route::get('/blogs', 'FsnsController@blogs')->middleware('auth');
 Route::get('/team/{id}', 'FsnsController@team');
-Route::get('/teams', 'FsnsController@teams');
-Route::get('/create', 'FsnsController@create');
+Route::get('/teams', 'FsnsController@teams')->middleware('auth');
+Route::get('/create', 'FsnsController@create')->middleware('auth');
 Route::get('/update/{id}', 'FsnsController@change');
 Route::get('/myPage/{id}', 'FsnsController@mypage');
 Route::get('/myPage/{id}/account', 'FsnsController@account');
@@ -35,6 +35,7 @@ Route::get('/team/{id}/blog', 'FsnsController@blog');
 Route::get('/team/{id}/blog/blogup/{blog_id}', 'FsnsController@blogup');
 Route::get('/team/{id}/blog/post', 'FsnsController@post');
 Route::get('/team/{id}/contact', 'FsnsController@contact');
+Route::get('/team/{id}/follower', 'FsnsController@follower');
 
 Route::post('/delete/{id}', 'FsnsController@del');
 Route::post('/serch','FsnsController@serch');
@@ -50,10 +51,9 @@ Route::post('/team/{id}/movie/mdel/{movie_id}', 'FsnsController@mdel');
 Route::post('/team/{id}/blog/bup/{blog_id}', 'FsnsController@bup');
 Route::post('/team/{id}/blog/bdel/{blog_id}', 'FsnsController@bdel');
 Route::post('/team/{id}/contact', 'FsnsController@mail');
+Route::post('/team/{id}/follower', 'FsnsController@tfollow');
 Route::post('/players', 'FsnsController@user');
 Route::post('/myPage/{id}', 'FsnsController@rewrite');
-
-Route::get('/team/{id}/days/dayschan', 'FsnsController@dayschan');
 
 Auth::routes();
 

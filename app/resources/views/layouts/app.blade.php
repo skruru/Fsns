@@ -10,14 +10,14 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ mix('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -73,12 +73,8 @@
         </nav>
 
         <main class="py-4">
-            @yield('top')
-            <div class="container-fluid">
-                <div class="mx-auto" style="max-width:1200px">
-                    <!-- チームページのメニューバー -->
-                    @yield('teammenu')
-                </div>
+            <div class="container">
+                @yield('content')
             </div>
         </main>
     </div>

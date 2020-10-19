@@ -14,18 +14,38 @@
     </tr>
     <tr>
         @foreach($days as $day)
-        @if($day === null)
-        </tr><tr>
-        @elseif($plans[0] != '' && $day == $today->day && $day == $plans[0]->day)
-        <td scope="col" class="bg-danger">{{$day}}<p class="text-white">today</p></td>
-        @elseif($day == $today->day && $today->month == $tt['tmM'])
-        <td scope="col" class="bg-secondary">{{$day}}<p class="text-white">today</p></td>
-        @elseif($plans[0] != '' && $day == $plans[0]->day)
-        <td scope="col" class="bg-primary">{{$day}}<p class="text-white">{{$plans[0]->todo}}</p></td>
-        @else
-        <td scope="col" class="">{{$day}}</td>
-        @endif
+            @if($day === null)
+                </tr><tr>
+                @continue
+            @endif
+            @php
+                global $plan_day;
+                $plan_day = '';
+            @endphp
+            @foreach($plans as $plan)
+                @if($plan != '' && $day == $today->day && $day == $plan->day) <!---今日と予定が一緒の時--->
+                    @php $plan_day = 'plan_and_today'; @endphp
+                @endif
+                @if($day == $today->day && $today->month == $tt['tmM']) <!---今日--->
+                    @php $plan_day = 'today'; @endphp
+                @endif
+                @if($plan != '' && $day == $plan->day) <!---予定--->
+                    @php $plan_day = 'plan_day';
+                         $todo = $plan->todo;
+                    @endphp
+                @endif
+            @endforeach
+                @if($plan_day === 'plan_and_today')
+                    <td scope="col" class="bg-danger">{{$day}}<p class="text-white">today</p></td>
+                @elseif($plan_day === 'today')
+                    <td scope="col" class="bg-secondary">{{$day}}<p class="text-white">today</p></td>
+                @elseif($plan_day === 'plan_day')
+                    <td scope="col" class="bg-primary">{{$day}}<p class="text-white">{{$todo}}</p></td>
+                @else
+                <td scope="col" class="">{{$day}}</td>
+                @endif
         @endforeach
+
     </tr>
 </table>
 
@@ -36,9 +56,7 @@
 <dl class="border">
 <dt>{{$plan->month}}月 {{$plan->day}}日</dt>
 <dd>{{$plan->start}}時　〜　{{$plan->end}}時まで　　{{$plan->todo}}</dd>
-<form action="/team/{{$item->id}}/days/daysUp/{{$plan->id}}" method="get">
-<p><input type="submit" value="変更・削除"></p>
-</form>
+<p><a href="/team/{{$item->id}}/days/daysUp/{{$plan->id}}/?m={{$today->month}}">変更・削除</a></p>
 </dl>
 @endforeach
 @endif
