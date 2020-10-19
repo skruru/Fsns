@@ -1,7 +1,7 @@
 @extends('team')
 
 @section('show')
-<caption><a href="/team/{{$item->id}}/days/?y={{$today->year}}&&m={{$today->month}}">今日</a><a href="/team/2/days?y={{$subY}}&&m={{$subM}}">前月</a>{{$tmM}}月 {{$tmY}}年<a href="/team/2/days?y={{$addY}}&&m={{$addM}}"> 来月>></a></caption>
+<caption><a href="/team/{{$item->id}}/days/?y={{$today->year}}&&m={{$today->month}}">今日</a><a href="/team/{{$item->id}}/days?y={{$subY}}&&m={{$subM}}">前月</a>{{$tmM}}月 {{$tmY}}年<a href="/team/{{$item->id}}/days?y={{$addY}}&&m={{$addM}}"> 来月>></a></caption>
 <table class="table table-bordered">
     <tr>
         <th scope="col" class="bg-danger text-light">Sunday</th>

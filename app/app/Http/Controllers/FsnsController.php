@@ -44,7 +44,24 @@ class FsnsController extends Controller
     //topページのフォローチームのブログ
     public function blogs()
     {
-        return view('topblog');
+        $user = Auth::user();
+        $follows = DB::table('followers')->where('user_id', $user->id)->get();
+        foreach($follows as $follow)
+        {
+            $blog = DB::table('blogs')->orderBy('updated_at', 'desc')->where('team_id', $follow->team_id)->get();
+            if($blog->isEmpty()){
+                continue;
+            }else{
+                $blogs[] = $blog;
+            }
+        }
+        // dd($blogs);
+        foreach($blogs as $blog)
+        {
+            $team[] = DB::table('teams')->where('id', $blog[0]->team_id)->get();
+        }
+        // dd($team);
+        return view('topblog', ['blogs' => $blogs, 'team' => $team]);
     }
 
     // 個別チームのページ
@@ -839,7 +856,11 @@ class FsnsController extends Controller
         DB::table('followers')->insert($param);
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('follower', ['item' => $items[0], 'tt' => $tt, 'id' => $id]);
+
+        $followers = DB::table('followers')->where('team_id', $id)->orderBy('user_id', 'desc')->get();
+        $user = DB::table('users')->where('id', $followers[0]->user_id)->get();
+
+        return view('follower', ['item' => $items[0], 'tt' => $tt, 'id' => $id, 'user' => $user[0]]);
     }
 
     //マイページ
