@@ -10,12 +10,15 @@
             <p>活動地域：{{$users->area}}</p>
             <p>性別：{{$users->gender}}</p>
             <p>フットサル歴：{{$users->experience}}</p>
-            <p>フォローチーム：{{$follows}}チーム</p>
+        <p>フォローチーム：<a href="/followTeams/{{$users->id}}">{{$follows}}チーム</a></p>
             <p>twitter：{{$users->twitter}}</p>
             <p>instagram：{{$users->instagram}}</p>
             <p>facebook：{{$users->facebook}}</p>
         </div>
-        <p><a href="/myPage/{{$users->id}}/account">編集する</a></p>
+        <form action="/myPage/{{$users->id}}/account" method="POST">
+            @csrf
+            <input type="submit" value="編集する">
+        </form>
         <p><a href="/players">playersにもどる</a></p>
     </div>
 </div>

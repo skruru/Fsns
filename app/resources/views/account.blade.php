@@ -33,6 +33,7 @@
             <p>メールアドレス：<input type="mail" name="account_mail" value="{{$users->email}}"></p>
             <p><input type="submit" value="完了"></p>
         </form>
+        <p><a href="/myPage/{{$users->id}}">キャンセル</a></p>
     </div>
 </div>
 </div>

@@ -21,7 +21,6 @@ Route::get('/teams', 'FsnsController@teams')->middleware('auth');
 Route::get('/create', 'FsnsController@create')->middleware('auth');
 Route::get('/update/{id}', 'FsnsController@change')->middleware('auth');
 Route::get('/myPage/{id}', 'FsnsController@mypage')->middleware('auth');
-Route::get('/myPage/{id}/account', 'FsnsController@account')->middleware('auth');
 Route::get('/players', 'FsnsController@players')->middleware('auth');
 Route::get('/player', 'FsnsController@player')->middleware('auth');
 
@@ -36,6 +35,7 @@ Route::get('/team/{id}/blog/blogup/{blog_id}', 'FsnsController@blogup')->middlew
 Route::get('/team/{id}/blog/post', 'FsnsController@post')->middleware('auth');
 Route::get('/team/{id}/contact', 'FsnsController@contact')->middleware('auth');
 Route::get('/team/{id}/follower', 'FsnsController@follower')->middleware('auth');
+Route::get('/followTeams/{id}', 'FsnsController@followteams')->middleware('auth');
 
 Route::post('/delete/{id}', 'FsnsController@del');
 Route::post('/serch','FsnsController@serch');
@@ -54,6 +54,7 @@ Route::post('/team/{id}/contact', 'FsnsController@mail');
 Route::post('/team/{id}/follower', 'FsnsController@tfollow');
 Route::post('/players', 'FsnsController@user');
 Route::post('/myPage/{id}', 'FsnsController@rewrite');
+Route::post('/myPage/{id}/account', 'FsnsController@account');
 
 Auth::routes();
 

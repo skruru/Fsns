@@ -23,9 +23,11 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         $blogs = DB::table('blogs')->orderBy('updated_at', 'desc')->get();
+        // $sesdata = $request->session()->get('key');
+        // dd($sesdata);
         // dd($blogs);
         if($blogs->isEmpty())
         {

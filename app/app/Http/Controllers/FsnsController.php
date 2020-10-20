@@ -46,6 +46,22 @@ class FsnsController extends Controller
     {
         $user = Auth::user();
         $follows = DB::table('followers')->where('user_id', $user->id)->get();
+        if($follows->isEmpty())
+        {
+            // $blogs = DB::table('blogs')->orderBy('updated_at', 'desc')->get();
+
+            // for($i = 0; $i <= count($blogs)-1; $i++)
+            // {
+            //     $team_id[] = $blogs[$i]->team_id;
+            // }
+            // for($i = 0; $i <= count($team_id) -1; $i++)
+            // {
+            //     $teams[] = DB::table('teams')->where('id', $team_id[$i])->get();
+            // }
+            $blogs = null;
+
+            return view ('topblog', ['blogs' => $blogs]);
+        }
         foreach($follows as $follow)
         {
             $blog = DB::table('blogs')->orderBy('updated_at', 'desc')->where('team_id', $follow->team_id)->get();
@@ -876,9 +892,25 @@ class FsnsController extends Controller
     //マイページ編集
     public function account(Request $request,$id)
     {
+        $current_user = Auth::user();
+
+        $user = $id;
+        // $sesdata = $request->session();
+        // dd($user);
+
         $users = DB::select('select * from users WHERE id = ' . $id);
-        return view('account', ['users' => $users[0]]);
+
+        if($current_user->id == $user)
+        {
+            return view('account', ['users' => $users[0]]);
+        } else {
+            $follow = DB::table('followers')->where('user_id', $id)->get();
+            $follows = count($follow);
+            return view('mypage', ['users' => $users[0], 'follows' => $follows]);
+        }
     }
+
+    //マイページ編集完了のpost
     public function rewrite(Request $request,$id)
     {
         $param = [
@@ -893,8 +925,16 @@ class FsnsController extends Controller
             'facebook' => $request->facebook,
         ];
         DB::table('users')->where('id',$id)->update($param);
+        $follow = DB::table('followers')->where('user_id', $id)->get();
+        $follows = count($follow);
         $users = DB::select('select * from users WHERE id = ' . $id);
-        return view('mypage', ['users' => $users[0]]);
+        return view('mypage', ['users' => $users[0], 'follows' => $follows]);
+    }
+
+    //フォローチームの一覧
+    public function followteams($id)
+    {
+        return view('followteams', ['id' => $id]);
     }
 
     //playersのページ
