@@ -3,7 +3,14 @@
 @section('content')
     <div class="header">
         <h1 class="team_ttl">チーム名:{{$item->team_name}}</h1>
-        <p><a href="/update/{{$item->id}}">チーム編集</a></p>
+        <p>
+            <a href="/update/login/{{$item->id}}">チーム編集</a>
+            @if ($err != null)
+            @php
+                echo '<p class="text-danger">'.$err.'</p>';
+            @endphp
+            @endif
+        </p>
         <form action="/team/{{$item->id}}/follower" method="POST">
             @csrf
             <input type="hidden" name="team_id" value="{{$item->id}}">

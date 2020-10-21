@@ -90,9 +90,16 @@ class FsnsController extends Controller
         if (count($items) == 0) {
             return abort(404);
         }
+        $err = null;
 
         $followers = DB::table('followers')->where('team_id', $id)->count();
-        return view('team', ['item' => $items[0], 'id' => $id, 'tt' => $tt, 'followers' => $followers]);
+        return view('team', ['item' => $items[0], 'id' => $id, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
+    }
+
+    //teamの編集のパスワード
+    public function teamlogin($id)
+    {
+        return view('teamlogin', ['id' => $id]);
     }
 
     // 全チーム一覧
@@ -133,7 +140,19 @@ class FsnsController extends Controller
     // チーム編集
     public function change (Request $request, $id)
     {
+        $tt = My_func::today();
+
         $items = DB::select('select * from teams WHERE id = ' . $id);
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+
+        $password = $request->team_password;
+        $team = DB::table('teams')->where('id', $id)->get();
+        // dd($team[0]->team_password);
+        if($password != $team[0]->team_password)
+        {
+            $err = 'passwordが違います';
+            return view('team', ['item' => $items[0], 'id' => $id, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
+        }
         // dd($items);
         return view('update',['item' => $items[0]]);
     }
@@ -159,8 +178,9 @@ class FsnsController extends Controller
             'mail' => $request->mail,
             'team_contents' => $request->team_contents,
         ];
+        // dd($id);
         DB::table('teams')->where('id', $request->id)->update($param);
-            return redirect('/teams');
+            return redirect('/team/'.$id);
     }
 
     // チームの検索
@@ -243,12 +263,14 @@ class FsnsController extends Controller
         {
             $plans[] = '';
             // dd($plans);
-            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
+            $err = null;
+            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
         }else{
             $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
             // dd($plans);
+            $err = null;
 
-            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
+            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
         }
         // $plans = DB::select('select * from todos WHERE team_id = ' . $items[0]->id);
 
@@ -320,11 +342,15 @@ class FsnsController extends Controller
         {
             $plans[] = '';
             // dd($plans);
-            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
+            $err = null;
+
+            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
         }else{
             $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
 
-            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
+            $err = null;
+
+            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
         }
 
     }
@@ -397,10 +423,16 @@ class FsnsController extends Controller
         if($plans->isEmpty())
         {
             $plans[] = '';
-            return view('daysup', ['item' => $items[0], 'id' => $id, 'plana' => $plana[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'plans' => $plans, 'followers' => $followers]);
+
+            $err = null;
+
+            return view('daysup', ['item' => $items[0], 'id' => $id, 'plana' => $plana[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'plans' => $plans, 'followers' => $followers, 'err' => $err]);
 
         }else{
-            return view('daysup', ['item' => $items[0], 'id' => $id, 'plana' => $plana[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'plans' => $plans, 'followers' => $followers]);
+
+            $err = null;
+
+            return view('daysup', ['item' => $items[0], 'id' => $id, 'plana' => $plana[0], 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'plans' => $plans, 'followers' => $followers, 'err' => $err]);
         }
 
 
@@ -482,11 +514,15 @@ class FsnsController extends Controller
         if($plans->isEmpty())
         {
             $plans[] = '';
-            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
+
+            $err = null;
+
+            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
 
         } else {
+            $err = null;
 
-            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
+            return view('todo', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
         }
 
     }
@@ -567,11 +603,16 @@ class FsnsController extends Controller
         if($plans->isEmpty())
         {
             $plans[] = '';
-            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
+
+            $err = null;
+
+            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
 
         } else {
 
-            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers]);
+            $err = null;
+
+            return view('days', ['item' => $items[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'weekFirst' => $weekFirst, 'dt' => $dt, 'today' => $today, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
         }
     }
 
@@ -601,8 +642,9 @@ class FsnsController extends Controller
             $movies->append('movie', '');
         }
         // dd($tm);
+        $err = null;
 
-        return view('movie', ['item' => $items[0], 'movies' => $movies, 'tt' => $tt, 'followers' => $followers]);
+        return view('movie', ['item' => $items[0], 'movies' => $movies, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
     }
 
     //動画のアップロード
@@ -613,7 +655,9 @@ class FsnsController extends Controller
         $items = DB::select('select * from teams WHERE id = ' . $id);
         $followers = DB::table('followers')->where('team_id', $id)->count();
         // dd($items);
-        return view('upload', ['item' => $items[0], 'tt' => $tt, 'followers' => $followers]);
+        $err = null;
+
+        return view('upload', ['item' => $items[0], 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
     }
 
     //データベースへのアップロード
@@ -637,7 +681,9 @@ class FsnsController extends Controller
             $movies->append('movie', '');
         }
 
-        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies, 'followers' => $followers]);
+        $err = null;
+
+        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies, 'followers' => $followers, 'err' => $err]);
     }
 
     //movieの変更削除ページ
@@ -649,7 +695,9 @@ class FsnsController extends Controller
         $followers = DB::table('followers')->where('team_id', $id)->count();
         $movie = DB::table('movies')->where('id', $movie_id)->get();
         // dd($movie);
-        return view('movieup', ['item' => $items[0], 'tt' => $tt, 'movie' => $movie[0], 'followers' => $followers]);
+        $err = null;
+
+        return view('movieup', ['item' => $items[0], 'tt' => $tt, 'movie' => $movie[0], 'followers' => $followers, 'err' => $err]);
     }
 
     //movieの変更
@@ -675,7 +723,9 @@ class FsnsController extends Controller
         }
 
         // dd($movie[0]);
-        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies, 'followers' => $followers]);
+        $err = null;
+
+        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies, 'followers' => $followers, 'err' => $err]);
     }
 
     //movieの削除
@@ -694,7 +744,9 @@ class FsnsController extends Controller
             $movies->append('movie', '');
         }
         // dd($movie);
-        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies, 'followers' => $followers]);
+        $err = null;
+
+        return view('movie', ['item' => $items[0], 'tt' => $tt, 'movies' => $movies, 'followers' => $followers, 'err' => $err]);
     }
 
     // ブログ
@@ -712,7 +764,9 @@ class FsnsController extends Controller
             $blogs->append('blog', '');
         }
 
-        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt, 'followers' => $followers]);
+        $err = null;
+
+        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
     }
 
     //ブログの変更削除
@@ -731,7 +785,9 @@ class FsnsController extends Controller
             $blog->append('blog', '');
         }
 
-        return view('blogup', ['item' => $items[0], 'blog' => $blog[0], 'tt' => $tt, 'followers' => $followers]);
+        $err = null;
+
+        return view('blogup', ['item' => $items[0], 'blog' => $blog[0], 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
     }
 
     //ブログの変更
@@ -757,7 +813,9 @@ class FsnsController extends Controller
             $blogs->append('blog', '');
         }
 
-        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt, 'followers' => $followers]);
+        $err = null;
+
+        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
     }
 
     //投稿
@@ -767,7 +825,10 @@ class FsnsController extends Controller
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
         $followers = DB::table('followers')->where('team_id', $id)->count();
-        return view('post', ['item' => $items[0], 'tt' => $tt, 'followers' => $followers]);
+
+        $err = null;
+
+        return view('post', ['item' => $items[0], 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
     }
 
     //表示
@@ -791,7 +852,10 @@ class FsnsController extends Controller
         }
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
-        return view('blog', ['item' => $items[0], 'tt' => $tt, 'blogs' => $blogs, 'followers' => $followers]);
+
+        $err = null;
+
+        return view('blog', ['item' => $items[0], 'tt' => $tt, 'blogs' => $blogs, 'followers' => $followers, 'err' => $err]);
     }
 
     //ブログの削除
@@ -812,7 +876,9 @@ class FsnsController extends Controller
             $blogs->append('blog', '');
         }
 
-        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt, 'followers' => $followers]);
+        $err = null;
+
+        return view('blog', ['item' => $items[0], 'blogs' => $blogs, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
     }
 
     // コンタクト
@@ -822,7 +888,10 @@ class FsnsController extends Controller
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
         $followers = DB::table('followers')->where('team_id', $id)->count();
-        return view('contact', ['item' => $items[0], 'tt' => $tt, 'followers' => $followers]);
+
+        $err = null;
+
+        return view('contact', ['item' => $items[0], 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
     }
 
     //コンタクトの送信
@@ -832,7 +901,10 @@ class FsnsController extends Controller
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
         $followers = DB::table('followers')->where('team_id', $id)->count();
-        return view('contact', ['item' => $items[0],'tt' => $tt, 'followers' => $followers]);
+
+        $err = null;
+
+        return view('contact', ['item' => $items[0],'tt' => $tt, 'followers' => $followers, 'err' => $err]);
     }
 
     //フォロワーページ
@@ -934,7 +1006,18 @@ class FsnsController extends Controller
     //フォローチームの一覧
     public function followteams($id)
     {
-        return view('followteams', ['id' => $id]);
+        $follows = DB::table('followers')->where('user_id', $id)->get();
+        if($follows->isEmpty())
+        {
+            $teams = null;
+            return view('followteams', ['id' => $id, 'teams' => $teams]);
+        }
+        foreach($follows as $follow)
+        {
+            $teams[] = DB::table('teams')->where('id',$follow->id)->get();
+        }
+        // dd($teams);
+        return view('followteams', ['id' => $id, 'teams' => $teams]);
     }
 
     //playersのページ

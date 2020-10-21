@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="header">
-    <form action="/team/{id}}" method="POST">
+    <form action="/team/{{$item->id}}" method="POST">
     @csrf
         <input type="hidden" name="id" value="{{$item->id}}">
         <h1 class="team_ttl">チーム名:<input type="text" name="team_name" value="{{$item->team_name}}"></h1>
@@ -32,7 +32,7 @@
         <input type="submit" value="更新する">
     </form>
 </div>
-<p><a href="/teams">キャンセル</a></p><br>
+<p><a href="/team/{{$item->id}}">キャンセル</a></p><br>
 <form action="/delete/{{$item->id}}" method="POST">
 @csrf
 <input class="bg-danger" type="submit" value="削除する">
