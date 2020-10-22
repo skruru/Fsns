@@ -17,19 +17,22 @@
 Route::get('/', 'FsnsController@index');
 Route::get('/blogs', 'FsnsController@blogs')->middleware('auth');
 Route::get('/team/{id}', 'FsnsController@team')->middleware('auth');
+Route::post('/team/{id}', 'FsnsController@teamleader');
 Route::get('/teams', 'FsnsController@teams')->middleware('auth');
 Route::get('/create', 'FsnsController@create')->middleware('auth');
-Route::get('/update/login/{id}', 'FsnsController@teamlogin')->middleware('auth');
-Route::post('/update/{id}', 'FsnsController@change');
+Route::get('/team/login/{id}', 'FsnsController@teamlogin')->middleware('auth');
+Route::get('/update/{id}', 'FsnsController@change')->middleware('auth');
 Route::get('/myPage/{id}', 'FsnsController@mypage')->middleware('auth');
 Route::get('/players', 'FsnsController@players')->middleware('auth');
 Route::get('/player', 'FsnsController@player')->middleware('auth');
 
 Route::get('/team/{id}/days', 'FsnsController@days')->middleware('auth');
 Route::get('/team/{id}/days/todo', 'FsnsController@todo')->middleware('auth');
+Route::get('/team/{id}/days/login', 'FsnsController@dayslogin')->middleware('auth');
 Route::get('/team/{id}/days/daysUp/{todo_id}', 'FsnsController@daysup')->middleware('auth');
 Route::get('/team/{id}/movie', 'FsnsController@movie')->middleware('auth');
 Route::get('/team/{id}/movie/movieup/{movie_id}', 'FsnsController@movieup')->middleware('auth');
+Route::get('/team/{id}/movie/login', 'FsnsController@movielogin')->middleware('auth');
 Route::get('/team/{id}/movie/upload', 'FsnsController@upload')->middleware('auth');
 Route::get('/team/{id}/blog', 'FsnsController@blog')->middleware('auth');
 Route::get('/team/{id}/blog/blogup/{blog_id}', 'FsnsController@blogup')->middleware('auth');
@@ -41,7 +44,6 @@ Route::get('/followTeams/{id}', 'FsnsController@followteams')->middleware('auth'
 Route::post('/delete/{id}', 'FsnsController@del');
 Route::post('/serch','FsnsController@serch');
 Route::post('/teams', 'FsnsController@edit');
-Route::post('/team/{id}', 'FsnsController@update');
 Route::post('/team/{id}/days', 'FsnsController@add');
 Route::post('/team/{id}/days/todo', 'FsnsController@dup');
 Route::post('/team/{id}/days/{todo_id}/delete', 'FsnsController@ddel');

@@ -11,5 +11,5 @@
     <dd><a href="/team/{{$item->id}}/movie/movieup/{{$movie->id}}">変更/削除</a></dd>
 </dl>
 @endforeach
-<p><a href="/team/{{$item->id}}/movie/upload">動画のアップロード</a></p>
+<p><a href="/team/{{$item->id}}/movie/upload/">動画のアップロード</a></p>
 @endsection

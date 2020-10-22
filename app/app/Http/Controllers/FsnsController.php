@@ -99,14 +99,45 @@ class FsnsController extends Controller
     //teamの編集のパスワード
     public function teamlogin($id)
     {
+        $session = session()->get('key');
+        // dd($session);
+        $team = DB::table('teams')->where('id', $id)->get();
+        // dd($team[0]->team_password);
+        if($session == $team[0]->team_password)
+        {
+            $items = DB::select('select * from teams WHERE id = ' . $id);
+
+            return view('update',['item' => $items[0]]);
+
+        }
         return view('teamlogin', ['id' => $id]);
+    }
+
+    //teamleader
+    public function teamleader(Request $request,$id)
+    {
+        $tt = My_func::today();
+
+        session()->put(['key' => $request->team_password]);
+        // $session = session()->get('key');
+
+        // dd($session);
+
+        $items = DB::select('select * from teams WHERE id = ' . $id);
+        // dd($items);
+        if (count($items) == 0) {
+            return abort(404);
+        }
+        $err = null;
+
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+        return view('team', ['item' => $items[0], 'id' => $id, 'tt' => $tt, 'followers' => $followers, 'err' => $err]);
     }
 
     // 全チーム一覧
     public function teams(Request $request)
     {
-        // $teams = DB::select('select * from teams');
-        // dd(count($teams));
+        session()->forget('key');
         $teams = Team::all();
         return view('teams', ['teams' => $teams]);
     }
@@ -279,6 +310,14 @@ class FsnsController extends Controller
     // todo
     public function todo($id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         $dt = Carbon::now();
@@ -338,6 +377,7 @@ class FsnsController extends Controller
         $plans = DB::table('todos')->where('month', $m)->where('team_id', $items[0]->id)->get()->sortBy('day');
 
         // dd($plans);
+
         if($plans->isEmpty())
         {
             $plans[] = '';
@@ -359,6 +399,14 @@ class FsnsController extends Controller
     // 日程変更
     public function daysup($id,$todo_id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         $dt = Carbon::now();
@@ -441,6 +489,14 @@ class FsnsController extends Controller
     //日程変更完了
     public function dup(Request $request, $id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         $dt = Carbon::now();
@@ -619,6 +675,14 @@ class FsnsController extends Controller
     //予定の削除
     public function ddel($id,$todo_id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $today = Carbon::today(); //今日
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
@@ -650,6 +714,14 @@ class FsnsController extends Controller
     //動画のアップロード
     public function upload($id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
@@ -689,6 +761,14 @@ class FsnsController extends Controller
     //movieの変更削除ページ
     public function movieup($id,$movie_id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
@@ -703,6 +783,14 @@ class FsnsController extends Controller
     //movieの変更
     public function mup(Request $request,$id, $movie_id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         $param = [
@@ -731,6 +819,14 @@ class FsnsController extends Controller
     //movieの削除
     public function mdel($id, $movie_id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         DB::table('movies')->where('id', $movie_id)->delete();
@@ -772,6 +868,14 @@ class FsnsController extends Controller
     //ブログの変更削除
     public function blogup($id, $blog_id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
@@ -793,6 +897,14 @@ class FsnsController extends Controller
     //ブログの変更
     public function bup(Request $request, $id, $blog_id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
@@ -821,6 +933,14 @@ class FsnsController extends Controller
     //投稿
     public function post($id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
@@ -834,6 +954,14 @@ class FsnsController extends Controller
     //表示
     public function show(Request $request, $id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $param = [
             'team_id' => $request->team_id,
             'title' => $request->title,
@@ -861,6 +989,14 @@ class FsnsController extends Controller
     //ブログの削除
     public function bdel($id,$blog_id)
     {
+        $session = session()->get('key');
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        if($session != $team[0]->team_password)
+        {
+            return view('teamlogin', ['id' => $id]);
+        }
+
         $tt = My_func::today();
 
         $items = DB::select('select * from teams WHERE id = ' . $id);
