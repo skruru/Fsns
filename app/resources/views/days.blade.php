@@ -1,7 +1,8 @@
 @extends('team')
 
 @section('show')
-<caption><a href="/team/{{$item->id}}/days/?y={{$today->year}}&&m={{$today->month}}">今日</a><a href="/team/{{$item->id}}/days?y={{$subY}}&&m={{$subM}}">前月</a>{{$tmM}}月 {{$tmY}}年<a href="/team/{{$item->id}}/days?y={{$addY}}&&m={{$addM}}"> 来月>></a></caption>
+
+<caption><a href="/team/{{$id}}/days/?y={{$today->year}}&&m={{$today->month}}">今日</a><a href="/team/{{$id}}/days?y={{$subY}}&&m={{$subM}}">前月</a>{{$m}}月 {{$y}}年<a href="/team/{{$id}}/days?y={{$addY}}&&m={{$addM}}"> 来月>></a></caption>
 <table class="table table-bordered">
     <tr>
         <th scope="col" class="bg-danger text-light">Sunday</th>
@@ -20,44 +21,68 @@
             @endif
             @php
                 global $plan_day;
+                global $plan_and_day;
                 $plan_day = '';
+                $plan_and_day = '';
+                $plan_start = [];
+                $plan_end = [];
+                $todo = [];
             @endphp
-            @foreach($plans as $plan)
-                @if($plan != '' && $day == $today->day && $day == $plan->day) <!---今日と予定が一緒の時--->
-                    @php $plan_day = 'plan_and_today'; @endphp
-                @endif
-                @if($day == $today->day && $today->month == $tt['tmM']) <!---今日--->
-                    @php $plan_day = 'today'; @endphp
-                @endif
-                @if($plan != '' && $day == $plan->day) <!---予定--->
-                    @php $plan_day = 'plan_day';
-                         $todo = $plan->todo;
-                    @endphp
-                @endif
-            @endforeach
-                @if($plan_day === 'plan_and_today')
-                    <td scope="col" class="bg-danger">{{$day}}<p class="text-white">today</p></td>
+            @if (!$plans[0] == '')
+                @foreach($plans as $plan)
+                    @if($day == $today->day && $day == $plan->day) <!---今日と予定が一緒の時--->
+                        @php
+                            $plan_and_day = 'plan_and_today';
+                            $plan_start[] = $plan->start;
+                            $plan_end[] = $plan->end;
+                            $todo[] = $plan->todo;
+                        @endphp
+                    @elseif($day == $today->day && $today->month == $m) <!---今日--->
+                        @php $plan_day = 'today'; @endphp
+                    @elseif($day == $plan->day) <!---予定--->
+                        @php
+                            $plan_day = 'plan_day';
+                            $plan_start[] = $plan->start;
+                            $plan_end[] = $plan->end;
+                            $todo[] = $plan->todo;
+                        @endphp
+                    @endif
+                @endforeach
+            @elseif($day == $today->day && $today->month == $m)
+                @php $plan_day = 'today'; @endphp
+            @endif
+                @if($plan_and_day === 'plan_and_today')
+                    <td scope="col" class="bg-danger">{{$day}}
+                        <p class="text-white">today</p>
+                        @for($i = 0; $i < count($todo); $i++)
+                            <p class="text-white">{{$todo[$i]}}{{$plan_start[$i]}}時~{{$plan_end[$i]}}時</p>
+                        @endfor
+                    </td>
                 @elseif($plan_day === 'today')
                     <td scope="col" class="bg-secondary">{{$day}}<p class="text-white">today</p></td>
                 @elseif($plan_day === 'plan_day')
-                    <td scope="col" class="bg-primary">{{$day}}<p class="text-white">{{$todo}}</p></td>
+                    <td scope="col" class="bg-primary">{{$day}}
+                        @for($i = 0; $i < count($todo); $i++)
+                            <p class="text-white">{{$todo[$i]}}{{$plan_start[$i]}}~{{$plan_end[$i]}}</p>
+                        @endfor
+                    </td>
                 @else
-                <td scope="col" class="">{{$day}}</td>
+                    <td scope="col" class="">{{$day}}</td>
                 @endif
         @endforeach
-
     </tr>
 </table>
 
-<p><a href="/team/{{$item->id}}/days/todo?m={{$today->month}}">予定を追加</a></p>
+<p><a href="/team/{{$id}}/days/todo?y={{$y}}&&m={{$m}}">予定を追加</a></p>
 @yield('todo')
 @if($plans[0] != '')
-@foreach($plans as $plan)
-<dl class="border">
-<dt>{{$plan->month}}月 {{$plan->day}}日</dt>
-<dd>{{$plan->start}}時　〜　{{$plan->end}}時まで　　{{$plan->todo}}</dd>
-<p><a href="/team/{{$item->id}}/days/daysUp/{{$plan->id}}/?m={{$today->month}}">変更・削除</a></p>
-</dl>
-@endforeach
+    @foreach($plans as $plan)
+        <dl class="border">
+            <dt>{{$plan->month}}月 {{$plan->day}}日</dt>
+            <dd>{{$plan->start}}時　〜　{{$plan->end}}時まで　　{{$plan->todo}}</dd>
+            <p><a href="/team/{{$id}}/days/daysUp/{{$plan->id}}/?y={{$y}}&&m={{$m}}">変更・削除</a></p>
+        </dl>
+    @endforeach
 @endif
+
 @endsection

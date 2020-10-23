@@ -1,6 +1,7 @@
 @extends('team')
 
 @section('show')
+
 <div class="">
     <p>contact</p>
     <form action="" method="POST">
@@ -17,4 +18,5 @@
         <input type="submit" value="送信">
     </form>
 </div>
+
 @endsection
