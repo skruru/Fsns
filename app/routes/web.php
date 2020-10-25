@@ -65,7 +65,6 @@ Route::post('/team/{id}/blog/bdel/{blog_id}', 'FsnsController@bdel');
 
 //--------------------------------------contact---------------------------------------
 Route::get('/team/{id}/contact', 'FsnsController@contact')->middleware('auth');
-
 Route::post('/team/{id}/contact', 'FsnsController@mail');
 
 //--------------------------------------myPage---------------------------------------

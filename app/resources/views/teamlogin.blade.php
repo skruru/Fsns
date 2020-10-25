@@ -4,6 +4,9 @@
 <div class="">
     <h2>Teamlogin</h2>
     <p>チームパスワードを入力してください。</p>
+    @isset($err)
+        <p class="text-danger">{{$err}}</p>
+    @endisset
 </div>
 <form action="/team/{{$id}}" method="POST">
     @csrf

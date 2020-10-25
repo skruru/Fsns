@@ -6,9 +6,9 @@
         <h1 class="text-primary" style="text-align:center; font-size:1.2em; padding:24px 0px; font-weight:bold;">Fsns</h1>
         <div class="">
             <a href="/teams">チーム一覧</a><br>
-            @if (!$user == null)
+            @isset($user)
                 <a href="/myPage/{{$user->id}}">マイページへ</a>
-            @endif
+            @endisset
         </div>
     </div>
 </div>

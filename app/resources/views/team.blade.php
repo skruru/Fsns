@@ -20,7 +20,7 @@
         <p class="header_content_img"><img src="https://placehold.jp/150x150.png" alt=""></p>
         <p class="header_content_area">活動地域：{{$team->team_area}}</p>
         <p class="header_content_txt">活動内容：{{$team->team_contents}}</p>
-        <ul class="team_link d-flex">
+        <ul class="team_link">
             <li>twitter: {{$team->twitter}}</li>
             <li>instagram: {{$team->instagram}}</li>
             <li>facebook: {{$team->facebook}}</li>

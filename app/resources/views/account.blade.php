@@ -7,7 +7,12 @@
         <h1 class="text-primary" style="text-align:center; font-size:1.2em; padding:24px 0px; font-weight:bold;">マイページ</h1>
         <form action="/myPage/{{$user->id}}" method="POST">
             @csrf
-            <p>アカウント名：<input type="text" name="account_name" value="{{$user->name}}"></p>
+            <p>
+                アカウント名：<input type="text" name="account_name" value="{{$user->name}}">
+                @isset($err_name)
+                    <p class="text-danger">{{$err_name}}</p>
+                @endisset
+            </p>
             <p>活動地域：<input type="text" name="account_area" value="{{$user->area}}"></p>
             <p>性別
                 <input id="male" type="radio" name="gender" value="male"><label for="male">男性</label>
@@ -28,8 +33,18 @@
                 </li>
             </ul>
             <p>フットサル歴：<input type="text" name="experience" value="{{$user->experience}}"></p>
-            <p>パスワード：<input type="password" name="account_password" value="{{$user->password}}"></p>
-            <p>メールアドレス：<input type="mail" name="account_mail" value="{{$user->email}}"></p>
+            <p>
+                パスワード：<input type="password" name="account_password" value="{{$user->password}}">
+                @isset($err_password)
+                    <p class="text-danger">{{$err_password}}</p>
+                @endisset
+            </p>
+            <p>
+                メールアドレス：<input type="mail" name="account_mail" value="{{$user->email}}">
+                @isset($err_email)
+                    <p class="text-danger">{{$err_email}}</p>
+                @endisset
+            </p>
             <p><input type="submit" value="完了"></p>
         </form>
         <p><a href="/myPage/{{$user->id}}">キャンセル</a></p>

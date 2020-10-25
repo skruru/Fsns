@@ -25,27 +25,6 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $blogs = DB::table('blogs')->orderBy('updated_at', 'desc')->get();
-        // $sesdata = $request->session()->get('key');
-        // dd($sesdata);
-        // dd($blogs);
-        if($blogs->isEmpty())
-        {
-            $teams[] = DB::table('teams')->get();
-
-            return view('top', ['blogs' => $blogs, 'teams' => $teams]);
-
-        } else {
-            for($i = 0; $i <= count($blogs)-1; $i++)
-            {
-                $team_id[] = $blogs[$i]->team_id;
-            }
-            for($i = 0; $i <= count($team_id) -1; $i++)
-            {
-                $teams[] = DB::table('teams')->where('id', $team_id[$i])->get();
-            }
-            // dd($teams[2][0]);
-            return view('top', ['blogs' => $blogs, 'teams' => $teams]);
-        }
+        return redirect('/');
     }
 }

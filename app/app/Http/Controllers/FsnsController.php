@@ -12,7 +12,9 @@ use App\Models\Movie;
 use App\Lib\My_func;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Thanks;
+use App\Mail\Contacts;
 
 class FsnsController extends Controller
 {
@@ -22,14 +24,7 @@ class FsnsController extends Controller
         $blogs = DB::table('blogs')->orderBy('updated_at', 'desc')->get();
         $user = Auth::user();
 
-        if(Auth::user() == null)
-        {
-            $teams[] = DB::table('teams')->get();
-            $user = null;
-
-            return view('top', ['blogs' => $blogs, 'teams' => $teams, 'user' => $user]);
-
-        } elseif ($blogs->isEmpty()){
+        if ($blogs->isEmpty()){
 
             $teams[] = DB::table('teams')->get();
 
@@ -133,8 +128,38 @@ class FsnsController extends Controller
             'team_contents' => $request->team_contents,
         ];
 
-        DB::table('teams')->insert($param);
-            return redirect('/teams');
+        if($param['team_name'] == null){
+            $err_team_name = 'チームネームを入力してください。';
+        } else {
+            $err_team_name = '';
+        }
+        if($param['team_area'] == null){
+            $err_team_area = '活動地域を入力してください';
+        } else {
+            $err_team_area = '';
+        }
+        if($param['team_password'] == null){
+            $err_team_password = 'パスワードを入力してください';
+        } else {
+            $err_team_password = '';
+        }
+        if($param['mail'] == null){
+            $err_team_mail = 'メールアドレスを入力してください。';
+        } else {
+            $err_team_mail = '';
+        }
+        if($param['team_contents'] == null){
+            $err_team_contents = '活動内容を入力してください。';
+        } else {
+            $err_team_contents = '';
+        }
+        if($err_team_name != ''|| $err_team_area != ''|| $err_team_password != ''|| $err_team_mail != ''||$err_team_contents != ''){
+
+            return view('create', ['err_team_name' => $err_team_name, 'err_team_area' => $err_team_area, 'err_team_password' => $err_team_password, 'err_team_mail' => $err_team_mail, 'err_team_contents' => $err_team_contents]);
+        } else {
+            DB::table('teams')->insert($param);
+                return redirect('/teams');
+        }
     }
 
     // 個別チームのページ
@@ -144,9 +169,6 @@ class FsnsController extends Controller
 
         $team = DB::select('select * from teams WHERE id = ' . $id);
 
-        if (count($team) == 0) {
-            return abort(404);
-        }
         $user = Auth::user();
         $user_id = $user->id;
 
@@ -178,13 +200,17 @@ class FsnsController extends Controller
     {
         $tt = My_func::today();
 
-        session()->put(['key' => $request->team_password]);
-
         $team = DB::select('select * from teams WHERE id = ' . $id);
 
-        if (count($team) == 0) {
-            return abort(404);
+        if($team[0]->team_password != $request->team_password)
+        {
+            $err = 'チームパスワードが違います。';
+
+            return view('teamlogin',['id' => $id, 'team' => $team[0], 'err' => $err]);
+
         }
+
+        session()->put(['key' => $team[0]->team_password]);
 
         $followers = DB::table('followers')->where('team_id', $id)->count();
 
@@ -215,10 +241,41 @@ class FsnsController extends Controller
             'team_contents' => $request->team_contents,
         ];
 
+        $team = DB::table('teams')->where('id', $id)->get();
 
-        DB::table('teams')->where('id', $id)->update($param);
+        if($param['team_name'] == null){
+            $err_team_name = 'チームネームを入力してください。';
+        } else {
+            $err_team_name = '';
+        }
+        if($param['team_area'] == null){
+            $err_team_area = '活動地域を入力してください';
+        } else {
+            $err_team_area = '';
+        }
+        if($param['team_password'] == null){
+            $err_team_password = 'パスワードを入力してください';
+        } else {
+            $err_team_password = '';
+        }
+        if($param['mail'] == null){
+            $err_team_mail = 'メールアドレスを入力してください。';
+        } else {
+            $err_team_mail = '';
+        }
+        if($param['team_contents'] == null){
+            $err_team_contents = '活動内容を入力してください。';
+        } else {
+            $err_team_contents = '';
+        }
 
-        return redirect('/team/'.$id);
+        if($err_team_name != ''|| $err_team_area != ''|| $err_team_password != ''|| $err_team_mail != ''||$err_team_contents != ''){
+
+            return view('update', ['err_team_name' => $err_team_name, 'err_team_area' => $err_team_area, 'err_team_password' => $err_team_password, 'err_team_mail' => $err_team_mail, 'err_team_contents' => $err_team_contents, 'id' => $id, 'team' => $team[0]]);
+        } else {
+            DB::table('teams')->where('id', $id)->update($param);
+            return redirect('/team/'.$id);
+        }
     }
 
     //チームの削除
@@ -609,15 +666,27 @@ class FsnsController extends Controller
         $followers = DB::table('followers')->where('team_id', $id)->count();
         $plans = DB::table('todos')->where('month', $m)->where('team_id', $team[0]->id)->get()->sortBy('day');
 
-        if($request->start > $request->end){
+        if($plans->isEmpty()) {
+            $plans[0] = '';
+        }
+
+        $user = Auth::user();
+        $user_id = $user->id;
+
+        $follower = DB::table('followers')->where('team_id', $id)->where('user_id', $user_id)->get();
+        $follow = count($follower);
+
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+
+        if($request->start >= $request->end){
             $err = '始まる時間は終わる時間より早い時間で設定してください。';
 
-            return view('todo', ['team' => $team[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'today' => $today, 'tt' => $tt, 'followers' => $followers,'y' => $y, 'm' => $m, 'daysInMonth' => $daysInMonth, 'err' => $err]);
+            return view('todo', ['team' => $team[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'today' => $today, 'tt' => $tt, 'followers' => $followers,'y' => $y, 'm' => $m, 'daysInMonth' => $daysInMonth, 'err' => $err, 'follow' => $follow]);
         }elseif($request->todo == ''){
 
             $err = '内容を設定してください。';
 
-            return view('todo', ['team' => $team[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'today' => $today, 'tt' => $tt, 'followers' => $followers,'y' => $y, 'm' => $m, 'daysInMonth' => $daysInMonth, 'err' => $err]);
+            return view('todo', ['team' => $team[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'today' => $today, 'tt' => $tt, 'followers' => $followers,'y' => $y, 'm' => $m, 'daysInMonth' => $daysInMonth, 'err' => $err, 'follow' => $follow]);
         }
 
         $param = [
@@ -631,14 +700,6 @@ class FsnsController extends Controller
         DB::table('todos')->insert($param);
 
         $plans = DB::table('todos')->where('month', $m)->where('team_id', $team[0]->id)->get()->sortBy('day')->sortBy('start');
-
-        $user = Auth::user();
-        $user_id = $user->id;
-
-        $follower = DB::table('followers')->where('team_id', $id)->where('user_id', $user_id)->get();
-        $follow = count($follower);
-
-        $followers = DB::table('followers')->where('team_id', $id)->count();
 
         return view('days', ['team' => $team[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'today' => $today, 'tt' => $tt, 'followers' => $followers,'y' => $y, 'm' => $m, 'follow' => $follow]);
     }
@@ -688,13 +749,10 @@ class FsnsController extends Controller
 
         $tt = My_func::today();
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
-
         $user = Auth::user();
         $user_id = $user->id;
 
-        $follower = DB::table('followers')->where('team_id', $id)->where('user_id', $user_id)->get();
-        $follow = count($follower);
+        $follow = DB::table('followers')->where('team_id', $id)->where('user_id', $user_id)->count();
 
         $followers = DB::table('followers')->where('team_id', $id)->count();
 
@@ -709,6 +767,32 @@ class FsnsController extends Controller
             'title' => $request->title,
             'movie' => $request->movie,
         ];
+
+        $tt = My_func::today();
+
+        $team = DB::table('teams')->where('id', $id)->get();
+
+        $user = Auth::user();
+        $user_id = $user->id;
+
+        $follow = DB::table('followers')->where('team_id', $id)->where('user_id', $user_id)->count();
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+
+        if($param['title'] == null){
+            $err_title = 'タイトルを入力してください';
+        } else {
+            $err_title = '';
+        }
+        if($param['movie'] == null){
+            $err_movie = '画像を入力してください。';
+        } else {
+            $err_movie = '';
+        }
+        if($err_title != '' || $err_movie != '') {
+
+            return view('upload', ['team' => $team[0], 'tt' => $tt,'id' => $id , 'followers' => $followers, 'follow' => $follow, 'err_title' => $err_title, 'err_movie' => $err_movie]);
+        }
+
         DB::table('movies')->insert($param);
 
         $tt = My_func::today();
@@ -756,7 +840,7 @@ class FsnsController extends Controller
     }
 
     //movieの変更
-    public function mup(Request $request,$id, $movie_id)
+    public function mup(Request $request, $id, $movie_id)
     {
         $session = session()->get('key');
         $team = DB::table('teams')->where('id', $id)->get();
@@ -768,11 +852,36 @@ class FsnsController extends Controller
 
         $tt = My_func::today();
 
+        $user = Auth::user();
+        $user_id = $user->id;
+
+        $follow = DB::table('followers')->where('team_id', $id)->where('user_id', $user_id)->count();
+        $followers = DB::table('followers')->where('team_id', $id)->count();
+
+        $movie = DB::table('movies')->where('id', $movie_id)->get();
+
         $param = [
             'team_id' => $request->team_id,
             'title' => $request->title,
             'movie' => $request->movie,
         ];
+
+        if($param['title'] == null){
+            $err_title = 'タイトルを入力してください';
+        } else {
+            $err_title = '';
+        }
+        if($param['movie'] == null){
+            $err_movie = '画像を入力してください。';
+        } else {
+            $err_movie = '';
+        }
+
+        if($err_title != '' || $err_movie != '') {
+
+            return view('movieup', ['team' => $team[0],'movie' => $movie[0], 'tt' => $tt,'id' => $id , 'followers' => $followers, 'follow' => $follow, 'err_title' => $err_title, 'err_movie' => $err_movie]);
+        }
+
         DB::table('movies')->where('id', $movie_id)->update($param);
 
         $followers = DB::table('followers')->where('team_id', $id)->count();
@@ -873,12 +982,21 @@ class FsnsController extends Controller
             'title' => $request->title,
             'text' => $request->text,
         ];
-        DB::table('blogs')->insert($param);
+
+        if($param['title'] == null){
+            $err_title = 'タイトルを入力してください';
+        } else {
+            $err_title = '';
+        }
+        if($param['text'] == null){
+            $err_text = 'テキストを入力してください。';
+        } else {
+            $err_text = '';
+        }
 
         $tt = My_func::today();
 
         $followers = DB::table('followers')->where('team_id', $id)->count();
-        $blogs = Blog::all()->where('team_id', $id);
         $team = DB::select('select * from teams WHERE id = ' . $id);
 
         $user = Auth::user();
@@ -888,6 +1006,15 @@ class FsnsController extends Controller
         $follow = count($follower);
 
         $followers = DB::table('followers')->where('team_id', $id)->count();
+
+        if($err_title != '' || $err_text != '') {
+
+            return view('post', ['team' => $team[0], 'tt' => $tt,'id' => $id , 'followers' => $followers, 'follow' => $follow, 'err_title' => $err_title, 'err_text' => $err_text]);
+        }
+
+        DB::table('blogs')->insert($param);
+
+        $blogs = Blog::all()->where('team_id', $id);
 
         return view('blog', ['team' => $team[0], 'tt' => $tt,'id' => $id, 'blogs' => $blogs, 'followers' => $followers, 'follow' => $follow]);
     }
@@ -929,19 +1056,34 @@ class FsnsController extends Controller
             'title' => $request->title,
             'text' => $request->text,
         ];
-        DB::table('blogs')->where('team_id', $id)->where('id',$blog_id)->update($param);
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
-        $blogs = Blog::all()->where('team_id', $id);
-        $team = DB::table('teams')->where('id', $id)->get();
+        if($param['title'] == null){
+            $err_title = 'タイトルを入力してください';
+        } else {
+            $err_title = '';
+        }
+        if($param['text'] == null){
+            $err_text = 'テキストを入力してください。';
+        } else {
+            $err_text = '';
+        }
 
         $user = Auth::user();
         $user_id = $user->id;
 
+        $followers = DB::table('followers')->where('team_id', $id)->count();
         $follower = DB::table('followers')->where('team_id', $id)->where('user_id', $user_id)->get();
         $follow = count($follower);
+        $team = DB::table('teams')->where('id', $id)->get();
+        $blog = DB::table('blogs')->where('team_id', $id)->where('id', $blog_id)->get();
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
+        if($err_title != '' || $err_text != '') {
+
+            return view('blogup', ['team' => $team[0], 'tt' => $tt,'id' => $id ,'blog' => $blog[0], 'followers' => $followers, 'follow' => $follow, 'err_title' => $err_title, 'err_text' => $err_text]);
+        }
+        DB::table('blogs')->where('team_id', $id)->where('id',$blog_id)->update($param);
+
+        $blogs = Blog::all()->where('team_id', $id);
 
         return view('blog', ['team' => $team[0], 'blogs' => $blogs, 'tt' => $tt,'id' => $id, 'followers' => $followers, 'follow' => $follow]);
     }
@@ -955,7 +1097,6 @@ class FsnsController extends Controller
 
         DB::table('blogs')->where('team_id', $id)->where('id',$blog_id)->delete();
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $blogs = Blog::all()->where('team_id', $id);
 
         $user = Auth::user();
@@ -1004,7 +1145,36 @@ class FsnsController extends Controller
 
         $followers = DB::table('followers')->where('team_id', $id)->count();
 
-        return view('contact', ['team' => $team[0],'tt' => $tt, 'followers' => $followers,'id' => $id, 'follow' => $follow]);
+        $mail_data = [
+            'user_name' => $user->name,
+            'user_email' => $user->email,
+            'team_name' => $team[0]->team_name,
+            'day' => $request->contact_day,
+            'text' => $request->contact_text,
+        ];
+
+        if($request->contact_day == null)
+        {
+            $err_day = '日程を入力してください';
+        } else {
+            $err_day = '';
+        }
+        if($request->contact_text == null)
+        {
+            $err_text = 'お問い合わせの内容を入力してください';
+        } else {
+            $err_text = '';
+        }
+
+        if($err_day != '' || $err_text != '')
+        {
+            return view('contact', ['team' => $team[0],'tt' => $tt, 'followers' => $followers,'id' => $id, 'follow' => $follow, 'err_day' => $err_day, 'err_text' => $err_text]);
+        }
+
+        Mail::to($team[0]->mail)->send(new Contacts($mail_data));
+        Mail::to($user->email)->send(new Thanks($mail_data));
+
+        return redirect('/team/'.$team[0]->id);
     }
 
     //フォロワーページ
@@ -1103,6 +1273,31 @@ class FsnsController extends Controller
             'instagram' => $request->instagram,
             'facebook' => $request->facebook,
         ];
+
+        if($param['name'] == null){
+            $err_name = 'アカウント名を入力してください';
+        } else {
+            $err_name = '';
+        }
+        if($param['password'] == null){
+            $err_password = 'パスワードを入力してください。';
+        } else {
+            $err_password = '';
+        }
+        if($param['email'] == null){
+            $err_email = 'メールアドレスを入力してください。';
+        } else {
+            $err_email = '';
+        }
+
+        $user = DB::select('select * from users WHERE id = ' . $id);
+
+        if($err_name != '' || $err_password != '' ||  $err_email != '') {
+
+            return view('account', ['user' => $user[0], 'err_name' => $err_name, 'err_password' => $err_password, 'err_email' => $err_email]);
+
+        }
+
         DB::table('users')->where('id',$id)->update($param);
         $follow = DB::table('followers')->where('user_id', $id)->count();
         $user = DB::select('select * from users WHERE id = ' . $id);
