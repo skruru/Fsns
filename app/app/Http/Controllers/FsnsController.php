@@ -212,8 +212,6 @@ class FsnsController extends Controller
 
         session()->put(['key' => $team[0]->team_password]);
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
-
         $user = Auth::user();
         $user_id = $user->id;
 
@@ -338,7 +336,6 @@ class FsnsController extends Controller
         }
 
         $team = DB::select('select * from teams WHERE id = ' . $id);
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $plan = DB::table('todos')->where('team_id', $id)->where('month', $m)->get();
 
         if($plan->isEmpty())
@@ -417,7 +414,6 @@ class FsnsController extends Controller
             $weekFirst++;
         }
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $plans = DB::table('todos')->where('month', $m)->where('team_id', $team[0]->id)->get()->sortBy('day');
 
         if($plans->isEmpty())
@@ -496,7 +492,6 @@ class FsnsController extends Controller
             $weekFirst++;
         }
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $plana = DB::table('todos')->where('id', $todo_id)->get();
         $plans = DB::table('todos')->where('month', $m)->where('team_id', $id)->get()->sortBy('day')->sortBy('start');
 
@@ -663,7 +658,6 @@ class FsnsController extends Controller
         }
 
         $team = DB::select('select * from teams WHERE id = ' . $id);
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $plans = DB::table('todos')->where('month', $m)->where('team_id', $team[0]->id)->get()->sortBy('day');
 
         if($plans->isEmpty()) {
@@ -722,7 +716,6 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $team = DB::select('select * from teams WHERE id = ' . $id);
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $movies = Movie::all()->where('team_id', $id);
 
         $user = Auth::user();
@@ -798,7 +791,6 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $team = DB::select('select * from teams WHERE id = ' . $id);
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $movies = Movie::all()->where('team_id', $id);
 
         $user = Auth::user();
@@ -825,7 +817,6 @@ class FsnsController extends Controller
 
         $tt = My_func::today();
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $movie = DB::table('movies')->where('id', $movie_id)->get();
 
         $user = Auth::user();
@@ -884,7 +875,6 @@ class FsnsController extends Controller
 
         DB::table('movies')->where('id', $movie_id)->update($param);
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $movies = Movie::all()->where('team_id', $id);
 
         $user = Auth::user();
@@ -913,7 +903,6 @@ class FsnsController extends Controller
 
         DB::table('movies')->where('id', $movie_id)->delete();
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $movies = Movie::all()->where('team_id', $id);
 
         $user = Auth::user();
@@ -933,7 +922,6 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $team = DB::select('select * from teams WHERE id = ' . $id);
-        $followers = DB::table('followers')->where('team_id', $id)->count();
 
         $blogs = Blog::all()->where('team_id', $id);
 
@@ -960,8 +948,6 @@ class FsnsController extends Controller
         }
 
         $tt = My_func::today();
-
-        $followers = DB::table('followers')->where('team_id', $id)->count();
 
         $user = Auth::user();
         $user_id = $user->id;
@@ -996,7 +982,6 @@ class FsnsController extends Controller
 
         $tt = My_func::today();
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $team = DB::select('select * from teams WHERE id = ' . $id);
 
         $user = Auth::user();
@@ -1032,7 +1017,6 @@ class FsnsController extends Controller
 
         $tt = My_func::today();
 
-        $followers = DB::table('followers')->where('team_id', $id)->count();
         $blog = DB::table('blogs')->where('team_id', $id)->where('id', $blog_id)->get();
 
         $user = Auth::user();
@@ -1116,7 +1100,6 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $team = DB::select('select * from teams WHERE id = ' . $id);
-        $followers = DB::table('followers')->where('team_id', $id)->count();
 
         $user = Auth::user();
         $user_id = $user->id;
@@ -1135,7 +1118,6 @@ class FsnsController extends Controller
         $tt = My_func::today();
 
         $team = DB::select('select * from teams WHERE id = ' . $id);
-        $followers = DB::table('followers')->where('team_id', $id)->count();
 
         $user = Auth::user();
         $user_id = $user->id;
