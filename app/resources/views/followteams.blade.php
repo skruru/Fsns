@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="">
-    <p>フォローチームの一覧</p>
+    <h2>フォローチームの一覧</h2>
         @if($teams == null)
             <p>フォローチームはありません。</p>
         @else

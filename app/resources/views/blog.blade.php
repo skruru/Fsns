@@ -13,16 +13,13 @@
 
 <div class="items_bord">
 
-    <div class="">
-        <p>blog</p>
-    </div>
-    <p><a href="/team/{{$id}}/blog/post">投稿する</a></p>
+    <p class="btn pb-1 pt-1 pr-2 pl-2 bg-primary"><a href="/team/{{$id}}/blog/post">投稿する</a></p>
     @isset($blogs)
         @foreach ($blogs as $blog)
-            <dl class="border">
+            <dl class="border bg-light">
                 <dt>{{$blog->title}}</dt>
                 <dd>{{$blog->text}}</dd>
-                <dd><a href="/team/{{$id}}/blog/blogup/{{$blog->id}}">変更/削除</a></dd>
+                <dd class="btn pb-1 pt-1 pr-2 pl-2"><a href="/team/{{$id}}/blog/blogup/{{$blog->id}}">変更/削除</a></dd>
             </dl>
         @endforeach
     @endisset

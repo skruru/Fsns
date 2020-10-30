@@ -33,7 +33,7 @@
         <p>フォローチームはありません。</p>
     @else
         @foreach ($blogs as $blog)
-            <div class="border p-2">
+            <div class="bg-light p-2">
                 <p>チーム：<a href="/team/{{$blog[0]->team_id}}">{{$team[$i][0]->team_name}}</a></p>
                 <p>タイトル：<a href="/team/{{$blog[0]->team_id}}/blog">{{$blog[0]->title}}</a></p>
                 <p>内容：{{$blog[0]->text}}</p>

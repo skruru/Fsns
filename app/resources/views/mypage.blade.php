@@ -18,10 +18,10 @@
         @if ($id == $current_user)
             <form action="/myPage/{{$user->id}}/account" method="POST">
                 @csrf
-                <input type="submit" value="編集する">
+                <input class="btn pb-1 pt-1 pr-2 pl-2" type="submit" value="編集する">
             </form>
         @endif
-        <p><a href="/">トップにもどる</a></p>
+        <p class="mt-3"><a href="/">トップにもどる</a></p>
     </div>
 </div>
 @endsection

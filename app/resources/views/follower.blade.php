@@ -4,12 +4,12 @@
 
 <div class="header_content">
     <h2>フォロワー一覧</h2>
-    <p><a href="/team/{{$id}}">チームページに戻る</a></p>
     @if($user == null)
-        <p>フォローしているアカウントはありません。</p>
+    <p>フォローしているアカウントはありません。</p>
     @else
-        <p><a href="/myPage/{{$user->id}}">{{$user->name}}</a></p>
+    <p><a href="/myPage/{{$user->id}}">{{$user->name}}</a></p>
     @endif
+    <p><a href="/team/{{$id}}">チームページに戻る</a></p>
 </div>
 
 @endsection

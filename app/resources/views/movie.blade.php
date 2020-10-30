@@ -13,16 +13,13 @@
 
 <div class="items_bord">
 
-    <div class="">
-        <p>movie</p>
-    </div>
-    <p><a href="/team/{{$id}}/movie/upload/">動画のアップロード</a></p>
+    <p class="btn pb-1 pt-1 pr-2 pl-2 bg-primary"><a class="d-block" href="/team/{{$id}}/movie/upload/">動画のアップロード</a></p>
     @isset($movies)
         @foreach($movies as $movie)
-            <dl class="border">
+            <dl class="border bg-light">
                 <dt>{{$movie->title}}</dt>
                 <dd>{{$movie->movie}}</dd>
-                <dd><a href="/team/{{$id}}/movie/movieup/{{$movie->id}}">変更/削除</a></dd>
+                <dd class="btn pb-1 pt-1 pr-2 pl-2"><a href="/team/{{$id}}/movie/movieup/{{$movie->id}}">変更/削除</a></dd>
             </dl>
         @endforeach
     @endisset

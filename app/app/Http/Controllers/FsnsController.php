@@ -603,7 +603,7 @@ class FsnsController extends Controller
 
         $followers = DB::table('followers')->where('team_id', $id)->count();
 
-        return view('todo', ['team' => $team[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'today' => $today, 'tt' => $tt, 'followers' => $followers,'y' => $y, 'm' => $m, 'daysInMonth' => $daysInMonth, 'follow' => $follow]);
+        return view('days', ['team' => $team[0], 'id' => $id, 'plans' => $plans, 'tmY' => $tmY, 'tmM' => $tmM, 'subY' => $subY, 'subM' => $subM, 'addY' => $addY, 'addM' => $addM, 'days' => $days, 'today' => $today, 'tt' => $tt, 'followers' => $followers,'y' => $y, 'm' => $m, 'daysInMonth' => $daysInMonth, 'follow' => $follow]);
 
     }
 

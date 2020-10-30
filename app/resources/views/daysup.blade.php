@@ -22,7 +22,7 @@
             <th scope="col">Wednesday</th>
             <th scope="col">Thursday</th>
             <th scope="col">Friday</th>
-            <th scope="col" class="bg-primary">Saturday</th>
+            <th scope="col" class="bg-info">Saturday</th>
         </tr>
         <tr>
             @foreach($days as $day)
@@ -63,10 +63,10 @@
                     @php $plan_day = 'today'; @endphp
                 @endif
                     @if($plan_and_day === 'plan_and_today')
-                        <td scope="col" class="bg-danger">{{$day}}
-                            <p class="text-white">today</p>
+                        <td scope="col" class="bg-warning">{{$day}}
+                            <p class="text-danger">today</p>
                             @for($i = 0; $i < count($todo); $i++)
-                                <p class="text-white">{{$todo[$i]}}{{$plan_start[$i]}}時~{{$plan_end[$i]}}時</p>
+                                <p class="text-danger">{{$todo[$i]}}{{$plan_start[$i]}}時~{{$plan_end[$i]}}時</p>
                             @endfor
                         </td>
                     @elseif($plan_day === 'today')
@@ -74,7 +74,7 @@
                     @elseif($plan_day === 'plan_day')
                         <td scope="col" class="bg-primary">{{$day}}
                             @for($i = 0; $i < count($todo); $i++)
-                                <p class="text-white">{{$todo[$i]}}{{$plan_start[$i]}}~{{$plan_end[$i]}}</p>
+                                <p class="text-white">{{$todo[$i]}}{{$plan_start[$i]}}時~{{$plan_end[$i]}}時</p>
                             @endfor
                         </td>
                     @else
@@ -87,7 +87,7 @@
     @if(isset($err))
         <p class="text-danger">{{$err}}</p>
     @endif
-    <form action="/team/{{$id}}/days/todo?y={{$y}}&&m={{$m}}" method="POST" class="border">
+    <form action="/team/{{$id}}/days/todo?y={{$y}}&&m={{$m}}" method="POST">
         @csrf
         <p>
             <select name="month" id="">
@@ -99,7 +99,7 @@
                     @endif
                 @endfor
             </select>月
-            <select name="day" id="">
+            <select  class="ml-1" name="day" id="">
                 @for($i = 1;$i <= 31;$i++)
                     @if($plana->day == $i)
                         <option value="{{$i}}"  selected>{{$i}}</option>
@@ -108,7 +108,7 @@
                     @endif
                 @endfor
             </select>日
-            <select name="start" id="">
+            <select  class="ml-2" name="start" id="">
                 @for($i = 0;$i <= 24;$i++)
                     @if($plana->start == $i)
                         <option value="{{$i}}" selected>{{$i}}時</option>
@@ -116,7 +116,7 @@
                         <option value="{{$i}}">{{$i}}時</option>
                     @endif
                 @endfor
-            </select>~
+            </select> ~
             <select name="end" id="">
                 @for($i = 0;$i <= 24;$i++)
                     @if($plana->end == $i)
@@ -126,17 +126,17 @@
                     @endif
                 @endfor
             </select>
-            <input type="text" name="todo" value="{{$plana->todo}}">
+            <input class="ml-2" type="text" name="todo" value="{{$plana->todo}}">
         </p>
         <input type="hidden" name="team_id" value="{{$plana->team_id}}">
         <input type="hidden" name="todo_id" value="{{$plana->id}}">
-        <p><input type="submit" value="変更する"></p>
+        <p><input class="btn pb-1 pt-1 pr-2 pl-2" type="submit" value="変更する"></p>
     </form>
     <form action="/team/{{$id}}/days/{{$plana->id}}/delete" method="POST">
         @csrf
-        <p><input type="submit" value="削除する"></p>
+        <p><input class="btn del pb-1 pt-1 pr-2 pl-2" type="submit" value="削除する"></p>
     </form>
-    <p><a href="/team/{{$id}}/days/todo?y={{$y}}&&m={{$m}}">戻る</a></p>
+    <p><a href="/team/{{$id}}/days/?y={{$y}}&&m={{$m}}">戻る</a></p>
 
 </div>
 @endsection

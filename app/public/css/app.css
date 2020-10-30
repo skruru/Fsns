@@ -11014,3 +11014,59 @@ textarea:focus {
   margin-right: 0px;
 }
 
+.cansel {
+  margin-top: 10px;
+  border-bottom: 1px solid #3490dc;
+}
+
+.btn {
+  background-color: #dca134;
+  color: white;
+  border-radius: 10px;
+  padding: 0;
+}
+
+.btn.del {
+  background-color: #dc4d34;
+}
+
+.btn.del:hover {
+  background-color: #da3316;
+  color: black;
+}
+
+.btn:hover {
+  background-color: #dfb363;
+}
+
+.btn a {
+  color: white;
+  display: block;
+}
+
+.btn a:hover {
+  color: #333;
+}
+
+.todo {
+  border-bottom: 1px solid #3490dc;
+  padding-bottom: 10px;
+}
+
+.todo a {
+  background-color: #3490dc;
+  color: #fff;
+  border-radius: 20px;
+  padding: 3px 20px;
+  display: block;
+}
+
+.todo a:hover {
+  color: black;
+}
+
+.team_img {
+  width: 150px;
+  height: 150px;
+}
+

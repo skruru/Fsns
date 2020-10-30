@@ -22,7 +22,7 @@
             <th scope="col">Wednesday</th>
             <th scope="col">Thursday</th>
             <th scope="col">Friday</th>
-            <th scope="col" class="bg-primary">Saturday</th>
+            <th scope="col" class="bg-info">Saturday</th>
         </tr>
         <tr>
             @foreach($days as $day)
@@ -63,10 +63,10 @@
                     @php $plan_day = 'today'; @endphp
                 @endif
                     @if($plan_and_day === 'plan_and_today')
-                        <td scope="col" class="bg-danger">{{$day}}
-                            <p class="text-white">today</p>
+                        <td scope="col" class="bg-warning">{{$day}}
+                            <p class="text-danger">today</p>
                             @for($i = 0; $i < count($todo); $i++)
-                                <p class="text-white">{{$todo[$i]}}{{$plan_start[$i]}}時~{{$plan_end[$i]}}時</p>
+                                <p class="text-danger">{{$todo[$i]}}{{$plan_start[$i]}}時~{{$plan_end[$i]}}時</p>
                             @endfor
                         </td>
                     @elseif($plan_day === 'today')
@@ -74,7 +74,7 @@
                     @elseif($plan_day === 'plan_day')
                         <td scope="col" class="bg-primary">{{$day}}
                             @for($i = 0; $i < count($todo); $i++)
-                                <p class="text-white">{{$todo[$i]}}{{$plan_start[$i]}}~{{$plan_end[$i]}}</p>
+                                <p class="text-white">{{$todo[$i]}}{{$plan_start[$i]}}時~{{$plan_end[$i]}}時</p>
                             @endfor
                         </td>
                     @else
@@ -84,16 +84,17 @@
         </tr>
     </table>
 
-    <p><a href="/team/{{$id}}/days/todo?y={{$y}}&&m={{$m}}">予定を追加</a></p>
+    <p class="btn pb-1 pt-1 pr-2 pl-2 bg-primary"><a href="/team/{{$id}}/days/todo?y={{$y}}&&m={{$m}}">予定を追加する</a></p>
     @yield('todo')
+    <p>{{$y}}年 {{$m}}月の予定</p>
     @if($plans[0] != '')
-        @foreach($plans as $plan)
-            <dl class="border">
-                <dt>{{$plan->month}}月 {{$plan->day}}日</dt>
-                <dd>{{$plan->start}}時　〜　{{$plan->end}}時まで　　{{$plan->todo}}</dd>
-                <p><a href="/team/{{$id}}/days/daysUp/{{$plan->id}}/?y={{$y}}&&m={{$m}}">変更・削除</a></p>
-            </dl>
-        @endforeach
+    @foreach($plans as $plan)
+    <dl class="border bg-light">
+        <dt>{{$plan->month}}月 {{$plan->day}}日</dt>
+        <dd>{{$plan->start}}時　〜　{{$plan->end}}時まで　　{{$plan->todo}}</dd>
+        <p class="btn"><a class="pb-1 pt-1 pr-2 pl-2" href="/team/{{$id}}/days/daysUp/{{$plan->id}}/?y={{$y}}&&m={{$m}}">変更・削除</a></p>
+    </dl>
+    @endforeach
     @endif
 
 </div>

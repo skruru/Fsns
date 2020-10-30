@@ -2,60 +2,60 @@
 
 @section('content')
 
-<div class="header">
+<div>
     <form action="/teams" method="POST">
         @csrf
-        <h1 class="team_ttl">
-            チーム名:<input type="text" name="team_name">
+        <h2>
+            チーム名:<input class="ml-3" type="text" name="team_name">
             @isset($err_team_name)
                 <p class="text-danger">{{$err_team_name}}</p>
             @endisset
-        </h1>
-        <p class="header_content_img"><img src="https://placehold.jp/150x150.png" alt=""><input type="file" name="team_img"></p>
+        </h2>
+        <p class="header_content_img"><img src="https://placehold.jp/150x150.png" alt=""><input class="ml-3" class="ml-3" type="file" name="team_img"></p>
         <p>
-            <p class="header_content_area">
-                活動地域：<input type="text" name="team_area">
+            <p>
+                活動地域：<input class="ml-3" type="text" name="team_area">
                 @isset($err_team_area)
                     <p class="text-danger">{{$err_team_area}}</p>
                 @endisset
             </p>
-            <p class="header_content_txt">
-                内容：<textarea name="team_contents"></textarea>
+            <p>
+                <p>活動内容：</p>
+                <textarea name="team_contents"></textarea>
                 @isset($err_team_contents)
                     <p class="text-danger">{{$err_team_contents}}</p>
                 @endisset
             </p>
         </p>
-        <ul class="team_link">
-            <li class="d-flex">
-                <a href="twitter">t</a>
-                <input type="text" name="twitter">
+        <ul>
+            <li class="d-flex align-items-baseline">
+                <p>twitter:</p>
+                <input class="ml-3" type="text" name="twitter">
             </li>
-            <li class="d-flex">
-                <a href="instagram">i</a>
-                <input type="text" name="instagram">
+            <li class="d-flex align-items-baseline">
+                <p>instagram:</p>
+                <input class="ml-3" type="text" name="instagram">
             </li>
-            <li class="d-flex">
-                <a href="facebook">f</a>
-                <input type="text" name="facebook">
+            <li class="d-flex align-items-baseline">
+                <p>facebook:</p>
+                <input class="ml-3" type="text" name="facebook">
             </li>
         </ul>
         <p>
-            チームパスワード：<input type="password" name="team_password">
+            チームパスワード：<input class="ml-3" type="password" name="team_password">
             @isset($err_team_password)
                 <p class="text-danger">{{$err_team_password}}</p>
             @endisset
         </p>
         <p>
-            メールアドレス：<input type="mail" name="mail">
+            メールアドレス：<input class="ml-3" type="mail" name="mail">
             @isset($err_team_mail)
                 <p class="text-danger">{{$err_team_mail}}</p>
             @endisset
         </p>
-        <input type="submit" value="作成する">
+        <input class="btn pb-1 pt-1 pr-2 pl-2 bg-primary" type="submit" value="作成する">
     </form>
 </div>
-<br>
-<p><a href="/teams">キャンセル</a></p>
+<p class="mt-3"><a href="/teams">キャンセル</a></p>
 
 @endsection

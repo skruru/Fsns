@@ -1,64 +1,66 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="header">
+
+<div>
     <form action="/team/login/{{$id}}" method="POST">
         @csrf
-        <h1 class="team_ttl">
-            チーム名:<input type="text" name="team_name" value="{{$team->team_name}}">
+        <h2>
+            チーム名:<input class="ml-3" type="text" name="team_name" value="{{$team->team_name}}">
             @isset($err_team_name)
                 <p class="text-danger">{{$err_team_name}}</p>
             @endisset
-        </h1>
-        <div class="header_content">
-            <p class="header_content_img"><img src="https://placehold.jp/150x150.png" alt=""><input type="file" name="team_img"></p>
+        </h2>
+        <div>
+            <p class="header_content_img"><img src="https://placehold.jp/150x150.png" alt=""><input class="ml-3" type="file" name="team_img"></p>
             <p>
-                <p class="header_content_area">
-                    活動地域：<input type="text" name="team_area" value="{{$team->team_area}}">
+                <p>
+                    活動地域：<input class="ml-3" type="text" name="team_area" value="{{$team->team_area}}">
                     @isset($err_team_area)
                         <p class="text-danger">{{$err_team_area}}</p>
                     @endisset
                 </p>
-                <p class="header_content_txt">
-                    活動内容：<textarea name="team_contents" placeholder="{{$team->team_contents}}"></textarea>
+                <p>
+                    <p>活動内容：</p>
+                    <textarea name="team_contents" placeholder="{{$team->team_contents}}"></textarea>
                     @isset($err_team_contents)
                         <p class="text-danger">{{$err_team_contents}}</p>
                     @endisset
                 </p>
             </p>
-            <ul class="team_link">
-                <li class="d-flex">
-                    <a href="twitter">t</a>
-                    <input type="text" name="twitter" value="{{$team->twitter}}">
+            <ul>
+                <li class="d-flex align-items-baseline">
+                    <p>twitter:</p>
+                    <input class="ml-3" type="text" name="twitter" value="{{$team->twitter}}">
                 </li>
-                <li class="d-flex">
-                    <a href="instagram">i</a>
-                    <input type="text" name="instagram" value="{{$team->instagram}}">
+                <li class="d-flex align-items-baseline">
+                    <p>instagram:</p>
+                    <input class="ml-3" type="text" name="instagram" value="{{$team->instagram}}">
                 </li>
-                <li class="d-flex">
-                    <a href="facebook">f</a>
-                    <input type="text" name="facebook" value="{{$team->facebook}}">
+                <li class="d-flex align-items-baseline">
+                    <p>facebook:</p>
+                    <input class="ml-3" type="text" name="facebook" value="{{$team->facebook}}">
                 </li>
             </ul>
         </div>
         <p>
-            チームパスワード：<input type="password" name="team_password" value="{{$team->team_password}}">
+            チームパスワード：<input class="ml-3" type="password" name="team_password" value="{{$team->team_password}}">
             @isset($err_team_password)
                 <p class="text-danger">{{$err_team_password}}</p>
             @endisset
         </p>
         <p>
-            メールアドレス：<input type="mail" name="mail" value="{{$team->mail}}">
+            メールアドレス：<input class="ml-3" type="mail" name="mail" value="{{$team->mail}}">
             @isset($err_team_mail)
                 <p class="text-danger">{{$err_team_mail}}</p>
             @endisset
         </p>
-        <input type="submit" value="更新する">
+        <input class="btn pb-1 pt-1 pr-2 pl-2" type="submit" value="更新する">
     </form>
 </div>
-<p><a href="/team/{{$id}}">キャンセル</a></p><br>
-<form action="/delete/{{$id}}" method="POST">
-@csrf
-<input class="bg-danger" type="submit" value="削除する">
+<form action="/delete/{{$id}}" method="POST" class="mt-2">
+    @csrf
+    <input class="btn del pb-1 pt-1 pr-2 pl-2" type="submit" value="削除する">
 </form>
+<p class="mt-3"><a href="/team/{{$id}}">キャンセル</a></p>
 @endsection

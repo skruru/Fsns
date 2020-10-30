@@ -45,7 +45,7 @@
                     <p class="text-danger">{{$err_email}}</p>
                 @endisset
             </p>
-            <p><input type="submit" value="完了"></p>
+            <p><input class="btn pb-1 pt-1 pr-2 pl-2" type="submit" value="編集完了"></p>
         </form>
         <p><a href="/myPage/{{$user->id}}">キャンセル</a></p>
     </div>

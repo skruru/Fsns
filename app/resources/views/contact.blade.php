@@ -14,19 +14,22 @@
 <div class="items_bord">
 
     <div class="">
-        <p>contact</p>
         <form action="" method="POST">
             @csrf
-            日程<input type="text" name="contact_day"><br>
-            @isset($err_day)
-                <p class="text-danger">{{$err_day}}</p>
-            @endisset
-            <p>内容</p>
-            <textarea id="" cols="30" rows="10" name="contact_text"></textarea><br>
-            @isset($err_text)
-                <p class="text-danger">{{$err_text}}</p>
-            @endisset
-            <input type="submit" value="送信">
+            <p>
+                日程<input class="ml-3" type="text" name="contact_day"><br>
+                @isset($err_day)
+                    <p class="text-danger">{{$err_day}}</p>
+                @endisset
+            </p>
+            <p>
+                <p>内容</p>
+                <textarea id="" cols="30" rows="10" name="contact_text"></textarea><br>
+                @isset($err_text)
+                    <p class="text-danger">{{$err_text}}</p>
+                @endisset
+                <input class="btn pb-1 pt-1 pr-2 pl-2 mt-2" type="submit" value="送信">
+            </p>
         </form>
     </div>
 

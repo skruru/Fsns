@@ -9,24 +9,24 @@
     @csrf
     {{$m}}月
     <input type="hidden" name="month" value="{{$m}}">
-    <select name="day" id="">
+    <select class="ml-1" name="day" id="">
         @for($i = 1;$i <= $daysInMonth;$i++)
             <option value="{{$i}}">{{$i}}</option>
         @endfor
     </select>日
-    <select name="start" id="">
+    <select class="ml-2" name="start" id="">
         @for($i = 0;$i <= 24;$i++)
             <option value="{{$i}}">{{$i}}時</option>
         @endfor
-    </select>~
+    </select> ~
     <select name="end" id="">
         @for($i = 0;$i <= 24;$i++)
             <option value="{{$i}}">{{$i}}時</option>
         @endfor
     </select>
-    <input type="text" name="todo">
+    <input class="ml-2" type="text" name="todo">
     <input type="hidden" name="id" value="{{$id}}">
-    <input type="submit" value="追加">
+    <input class="btn bg-primary pb-1 pt-1 pr-2 pl-2 ml-2" type="submit" value="記入する">
 </form>
-<p><a href="/team/{{$id}}/days/?y={{$tt['tmY']}}&&m={{$tt['tmM']}}">キャンセル</a></p>
+<p class="cansel"><a href="/team/{{$id}}/days/?y={{$tt['tmY']}}&&m={{$tt['tmM']}}">キャンセル</a></p>
 @endsection
