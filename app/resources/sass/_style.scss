@@ -70,3 +70,24 @@ input:focus, textarea:focus {
         color: white;
     }
 }
+.team_items {
+    padding: 0 5px;
+    border-radius: 50px;
+    margin-right: 5px;
+    border:1px solid #3490dc;
+}
+.team_items.show_nav {
+    background-color: #3490dc;
+    a {
+        color: white;
+    }
+}
+.team_items.show {
+    background-color: #3490dc;
+    a {
+        color: white;
+    }
+}
+.team_items:nth-last-child(1) {
+    margin-right: 0px;
+}

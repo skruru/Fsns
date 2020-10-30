@@ -37269,6 +37269,9 @@ module.exports = function(module) {
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
+var _require = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"),
+    has = _require.has;
+
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // window.Vue = require('vue');
 
 /**
@@ -37299,19 +37302,25 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // window
     ///////トップの右のナビ//////////////
     var top_nav_items = document.querySelectorAll('.top_nav_item');
     var top_nav_item_spans = document.querySelectorAll('.top_nav_item_span');
+    var team_items = document.querySelectorAll('.team_items');
 
-    var _loop = function _loop(i) {
-      top_nav_items[i].addEventListener('mouseover', function () {
-        top_nav_item_spans[i].classList.add('move_span');
-      }, false);
-      top_nav_items[i].addEventListener('mouseleave', function () {
-        top_nav_item_spans[i].classList.remove('move_span');
-      }, false);
-    };
+    function mouse(current, target, todoclass) {
+      var _loop = function _loop(i) {
+        target[i].addEventListener('mouseover', function () {
+          current[i].classList.add(todoclass);
+        }, false);
+        target[i].addEventListener('mouseleave', function () {
+          current[i].classList.remove(todoclass);
+        }, false);
+      };
 
-    for (var i = 0; i < top_nav_items.length; i++) {
-      _loop(i);
+      for (var i = 0; i < target.length; i++) {
+        _loop(i);
+      }
     }
+
+    mouse(top_nav_item_spans, top_nav_items, 'move_span');
+    mouse(team_items, team_items, 'show');
   });
 }
 

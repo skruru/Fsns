@@ -4,6 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+const { has } = require('lodash');
+
 require('./bootstrap');
 
 // window.Vue = require('vue');
@@ -39,13 +41,22 @@ require('./bootstrap');
         const top_nav_items = document.querySelectorAll('.top_nav_item');
         const top_nav_item_spans = document.querySelectorAll('.top_nav_item_span');
 
-        for(let i = 0; i < top_nav_items.length; i++){
-            top_nav_items[i].addEventListener('mouseover', function () {
-                top_nav_item_spans[i].classList.add('move_span');
-            }, false);
-            top_nav_items[i].addEventListener('mouseleave', function () {
-                top_nav_item_spans[i].classList.remove('move_span');
-            }, false);
+        const team_items = document.querySelectorAll('.team_items');
+
+        function mouse(current, target, todoclass) {
+            for(let i = 0; i < target.length; i++){
+               target[i].addEventListener('mouseover', () => {
+                    current[i].classList.add(todoclass);
+                }, false);
+               target[i].addEventListener('mouseleave', () => {
+                    current[i].classList.remove(todoclass);
+                }, false);
+            }
         }
+
+        mouse(top_nav_item_spans, top_nav_items, 'move_span');
+
+        mouse(team_items, team_items, 'show');
+
     });
 }

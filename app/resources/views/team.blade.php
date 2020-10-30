@@ -30,16 +30,14 @@
     </div>
 </div>
 <section class="items">
+    @yield('show')
     <nav class="items_nav">
         <ul class="d-flex justify-content-end">
-            <li><a href="/team/{{$id}}/days/?y={{$tt['tmY']}}&&m={{$tt['tmM']}}">Days</a></li>
-            <li><a href="/team/{{$id}}/movie">Movie</a></li>
-            <li><a href="/team/{{$id}}/blog">Blog</a></li>
-            <li><a href="/team/{{$id}}/contact">Contact</a></li>
+            <li class="team_items"><a href="/team/{{$id}}/days/?y={{$tt['tmY']}}&&m={{$tt['tmM']}}">Days</a></li>
+            <li class="team_items"><a href="/team/{{$id}}/movie">Movie</a></li>
+            <li class="team_items"><a href="/team/{{$id}}/blog">Blog</a></li>
+            <li class="team_items"><a href="/team/{{$id}}/contact">Contact</a></li>
         </ul>
     </nav>
-    <div class="items_bord">
-        @yield('show')
-    </div>
 </section>
 @endsection

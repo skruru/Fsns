@@ -30,7 +30,7 @@
 
     <div class="mx-auto border border-primary p-2" style="max-width:1200px">
         @for($i = 0; $i <= count($blogs)-1; $i++)
-        <div class="border p-2">
+        <div class="p-2 bg-light">
             <p>チーム：<a href="/team/{{$blogs[$i]->team_id}}">{{$teams[$i][0]->team_name}}</a></p>
             <p>タイトル：<a href="/team/{{$blogs[$i]->team_id}}/blog">{{$blogs[$i]->title}}</a></p>
             <p>内容：{{$blogs[$i]->text}}</p>
