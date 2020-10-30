@@ -5,7 +5,7 @@
     @csrf
     <p>チーム検索</p>
     <input type="text" class="form-control col-md-5" placeholder="検索したいチーム名を入力してください" name="team_name">
-    <button type="submit" class="btn bg-primary col-md-5 mt-1">検索</button>
+    <button type="submit" class="btn bg-primary col-md-5 mt-1 font-weight-bold">検索</button>
 </form>
 <br><br>
 <div class="">
